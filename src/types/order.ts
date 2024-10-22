@@ -1,6 +1,14 @@
 import type { IDateValue, IDatePickerControl } from './common';
 
 // ----------------------------------------------------------------------
+export type ICustomerCheckout = {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  shippingAddress: string;
+};
+
+// ----------------------------------------------------------------------
 
 export type IOrderTableFilters = {
   name: string;

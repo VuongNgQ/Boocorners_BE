@@ -1,8 +1,19 @@
 import type { SxProps } from '@mui/material';
+import type { ICustomerCheckout } from 'src/types/order';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
-import { Box, Link, Stack, Divider, useTheme, Typography, RadioGroup } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import {
+  Box,
+  Link,
+  Stack,
+  Divider,
+  useTheme,
+  Typography,
+  RadioGroup,
+  FormHelperText,
+} from '@mui/material';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
@@ -10,9 +21,18 @@ import { RouterLink } from 'src/routes/components';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { fCurrency } from 'src/utils/format-number';
+import { truncateTextMiddle } from 'src/utils/text';
 
 import { pxToRem } from 'src/theme/styles';
+import { createOrder } from 'src/actions/order';
+import { createCartBatch } from 'src/actions/cart';
+import {
+  SHIPPING_COST,
+  CHECKOUT_FAILED_RETURN_URL,
+  CHECKOUT_SUCCESS_RETURN_URL,
+} from 'src/config-global';
 
+import { toast } from 'src/components/snackbar';
 import { SvgColor } from 'src/components/svg-color';
 
 import { useCartContext } from './context';
@@ -20,14 +40,65 @@ import CartDialogForm from './cart-dialog-form';
 import CustomRadio from './_partials/custom-radio';
 import { ContainedButton } from '../_partials/buttons';
 
+type ICustomerInfo = ICustomerCheckout & {
+  id: number;
+};
 export default function CartInfo() {
+  const [shipCost, setShipCost] = useState(() => SHIPPING_COST || 0);
+
+  const [customerInfo, setCustomerInfo] = useState<ICustomerInfo | null | 'empty'>(null);
+
   const theme = useTheme();
+
   const open = useBoolean();
+
+  const isSubmitting = useBoolean();
+
+  const isPrepaid = useBoolean();
+
   const { products } = useCartContext();
+
   const total = useMemo(
     () => products.reduce((acc, product) => acc + product.price * product.quantityInCart, 0),
     [products]
   );
+
+  const paidAmount = useMemo(() => {
+    if (isPrepaid.value) return (total + shipCost) * 0.7;
+    return total + shipCost;
+  }, [isPrepaid.value, total, shipCost]);
+  const handleCheckout = async () => {
+    if ((customerInfo as any)?.id) {
+      try {
+        isSubmitting.onTrue();
+        const customerId = (customerInfo as ICustomerInfo).id;
+        const createCartResponse = await createCartBatch({
+          cartId: customerId,
+          items: products.map((product) => ({
+            productId: product.id,
+            quantity: product.quantityInCart,
+          })),
+        });
+        const cartId = createCartResponse.details.id as number;
+        const orderResponse = await createOrder({
+          cartId,
+          customerInfoId: customerId,
+          returnUrl: CHECKOUT_SUCCESS_RETURN_URL,
+          cancelUrl: CHECKOUT_FAILED_RETURN_URL,
+          prepaid: isPrepaid.value,
+          description: '',
+        });
+        const qrPageUrl = orderResponse?.data?.checkoutUrl;
+        if (qrPageUrl) window.location.replace(qrPageUrl);
+        else toast.error('Something went wrong! Please try again later.');
+      } catch (err) {
+        console.error(err);
+        toast.error('Something went wrong! Please try again later.');
+      } finally {
+        isSubmitting.onFalse();
+      }
+    }
+  };
   return (
     <>
       <Box
@@ -63,10 +134,10 @@ export default function CartInfo() {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              mb: {
-                xs: pxToRem(43),
-                md: pxToRem(39),
-              },
+
+              ...(customerInfo === 'empty' && {
+                border: `1px solid ${theme.palette.error.light}`,
+              }),
             }}
             onClick={open.onTrue}
           >
@@ -81,8 +152,17 @@ export default function CartInfo() {
                 },
               }}
             >
-              Nguyễn Thị Anh Thư | (+84) 123 123 123 <br />
-              23 Tên đường Phường, Quận, Thành phố
+              {customerInfo === null || customerInfo === 'empty' ? (
+                <>
+                  Nguyễn Thị Anh Thư | (+84) 123 123 123 <br />
+                  23 Tên đường Phường, Quận, Thành phố
+                </>
+              ) : (
+                <>
+                  {customerInfo.fullName} | {customerInfo.phoneNumber} <br />
+                  {truncateTextMiddle(customerInfo.shippingAddress, 36)}
+                </>
+              )}
             </Typography>
             <SvgColor
               src="/assets/icons/arrow-down.svg"
@@ -94,7 +174,17 @@ export default function CartInfo() {
               }}
             />
           </Box>
-          <Box>
+          <FormHelperText error sx={{ mt: pxToRem(4) }}>
+            {customerInfo === 'empty' ? 'Bạn chưa điền thông tin!' : ''}
+          </FormHelperText>
+          <Box
+            sx={{
+              mt: {
+                xs: pxToRem(21),
+                md: pxToRem(17),
+              },
+            }}
+          >
             <Typography
               sx={{
                 fontSize: pxToRem(24),
@@ -117,13 +207,13 @@ export default function CartInfo() {
               }}
             />
             <Block label="Tổng tiền sản phẩm" value={fCurrency(total)} />
-            <Block
+            {/* <Block
               label="Phí vận chuyển"
-              value="$15"
+              value={fCurrency(shipCost)}
               sx={{
                 root: { mt: pxToRem(20) },
               }}
-            />
+            /> */}
             <Divider
               sx={{
                 border: '2px solid #000000',
@@ -132,7 +222,7 @@ export default function CartInfo() {
             />
             <Block
               label="Tổng đơn"
-              value="$580"
+              value={fCurrency(total + shipCost)}
               sx={{
                 label: {
                   color: '#000000',
@@ -163,7 +253,7 @@ export default function CartInfo() {
           </Typography>
 
           <RadioGroup
-            defaultValue="70"
+            defaultValue="100"
             row
             sx={{
               '& .MuiButtonBase-root.MuiRadio-root': {
@@ -172,19 +262,27 @@ export default function CartInfo() {
               columnGap: pxToRem(42),
             }}
           >
-            <CustomRadio value="100" label="100%" />
-            <CustomRadio value="70" label="70%" />
+            <CustomRadio value="100" label="100%" onClick={isPrepaid.onFalse} />
+            <CustomRadio value="70" label="70%" onClick={isPrepaid.onTrue} />
           </RadioGroup>
         </Box>
         <ContainedButton
-          sx={{ borderRadius: 0, p: pxToRem(20), maxWidth: 1, width: 1 }}
+          sx={{
+            borderRadius: 0,
+            p: pxToRem(20),
+            maxWidth: 1,
+            width: 1,
+            '&:hover': {
+              backgroundColor: 'primary.main',
+            },
+          }}
           mobileSxProps={{
             p: pxToRem(20),
           }}
         >
           <Block
             label="Thanh toán trước để đặt hàng"
-            value="$406"
+            value={fCurrency(paidAmount)}
             sx={{
               label: {
                 color: 'white',
@@ -206,6 +304,9 @@ export default function CartInfo() {
             maxWidth: 1,
             width: 1,
             backgroundColor: '#D1D1D1',
+            '&:hover': {
+              backgroundColor: '#D1D1D1',
+            },
           }}
           mobileSxProps={{
             p: pxToRem(20),
@@ -213,7 +314,7 @@ export default function CartInfo() {
         >
           <Block
             label="Cần thanh toán khi nhận hàng"
-            value="$174"
+            value={fCurrency(total + shipCost - paidAmount)}
             sx={{
               label: {
                 color: '#000',
@@ -229,15 +330,32 @@ export default function CartInfo() {
           />
         </ContainedButton>
 
-        <ContainedButton
-          smallFontSize
-          sx={{ mt: pxToRem(22), borderRadius: 0, p: pxToRem(20), maxWidth: 1, width: 1 }}
-          mobileSxProps={{
+        <LoadingButton
+          variant="contained"
+          sx={{
+            mt: pxToRem(22),
+            fontSize: pxToRem(14),
+            lineHeight: '1.51222',
+            backgroundColor: 'black',
+            borderRadius: 0,
             p: pxToRem(20),
+            maxWidth: 1,
+            width: 1,
+            [theme.breakpoints.down('md')]: {
+              p: pxToRem(20),
+              fontSize: pxToRem(14),
+            },
+          }}
+          loading={isSubmitting.value}
+          onClick={() => {
+            if (customerInfo === null) setCustomerInfo('empty');
+            else if (customerInfo !== 'empty') {
+              handleCheckout();
+            }
           }}
         >
           Go to Checkout
-        </ContainedButton>
+        </LoadingButton>
         <Link
           component={RouterLink}
           href={paths.main.shop.root}
@@ -269,7 +387,7 @@ export default function CartInfo() {
           </Box>
         </Link>
       </Box>
-      <CartDialogForm open={open.value} onClose={open.onFalse} />
+      <CartDialogForm open={open.value} onClose={open.onFalse} onInfo={setCustomerInfo} />
     </>
   );
 }

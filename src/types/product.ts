@@ -93,6 +93,7 @@ export type Product = {
   createdDate: string;
   lastModifiedDate: string;
   imageName: string;
+  volume: string;
   sales: any[];
   deleted: boolean;
 };

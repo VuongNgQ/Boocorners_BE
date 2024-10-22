@@ -227,7 +227,7 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
                 },
               }}
             >
-              Thể tích:
+              Thể tích : {product.volume}
             </Typography>
           </Box>
         </Grid>

@@ -1,5 +1,9 @@
 import packageJson from '../package.json';
+// ----------------------------------------------------------------------
 
+export const SHIPPING_COST = Number(import.meta.env.VITE_SHIPPING_COST);
+export const CHECKOUT_SUCCESS_RETURN_URL = window.location.origin + import.meta.env.VITE_FAILED_URL;
+export const CHECKOUT_FAILED_RETURN_URL = window.location.origin + import.meta.env.VITE_SUCCESS_URL;
 // ----------------------------------------------------------------------
 
 export type ConfigValue = {

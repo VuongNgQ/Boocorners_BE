@@ -20,6 +20,9 @@ const ShopViewPage = lazy(() => import('src/pages/shop/list'));
 const ShopDetailsPage = lazy(() => import('src/pages/shop/details'));
 // Cart
 const CartViewPage = lazy(() => import('src/pages/cart/list'));
+// Order
+const OrderSuccessPage = lazy(() => import('src/pages/order/order-success'));
+const OrderFailedPage = lazy(() => import('src/pages/order/order-failed'));
 // ----------------------------------------------------------------------
 
 export const mainRoutes = [
@@ -55,6 +58,19 @@ export const mainRoutes = [
           {
             path: 'cart',
             element: <CartViewPage />,
+          },
+          {
+            path: 'order',
+            children: [
+              {
+                path: 'success',
+                element: <OrderSuccessPage />,
+              },
+              {
+                path: 'failed',
+                element: <OrderFailedPage />,
+              },
+            ],
           },
         ],
       },

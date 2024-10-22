@@ -44,8 +44,8 @@ export function SignInView() {
   const password = useBoolean();
 
   const defaultValues = {
-    phoneNumber: '0832474699',
-    password: 'aA@123',
+    phoneNumber: '',
+    password: '',
   };
 
   const methods = useForm<SignInSchemaType>({

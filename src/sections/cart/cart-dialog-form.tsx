@@ -1,18 +1,94 @@
 import type { DialogProps } from '@mui/material';
+import type { ICustomerCheckout } from 'src/types/order';
 
-import { Box, Stack, Dialog, useTheme, InputBase, Typography, DialogTitle } from '@mui/material';
+import { z as zod } from 'zod';
+import { useForm } from 'react-hook-form';
+import { useMemo, useEffect } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Box, Stack, Dialog, useTheme, Typography, DialogTitle } from '@mui/material';
 
 import { pxToRem } from 'src/theme/styles';
+import { createCustomerInfo } from 'src/actions/customer';
 
+import { toast } from 'src/components/snackbar';
 import { SvgColor } from 'src/components/svg-color';
+import { Form, Field } from 'src/components/hook-form';
 
-import { ContainedButton } from '../_partials/buttons';
+// ----------------------------------------------------------------------
+
+export type CustomerInfoSchemaType = zod.infer<typeof customerInfoSchema>;
+
+export const customerInfoSchema = zod.object({
+  fullName: zod.string().min(1, { message: 'Full name is required!' }),
+  phoneNumber: zod
+    .string()
+    .min(1, { message: 'Phone number is required!' })
+    .refine(
+      (value) => {
+        const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s./0-9]*$/;
+        return phoneRegex.test(value);
+      },
+      {
+        message: 'Invalid phone number format!',
+      }
+    ),
+  email: zod
+    .string()
+    .email('Invalid email address format!')
+    .min(1, { message: 'Email address is required!' }),
+  shippingAddress: zod.string().min(1, { message: 'Shipping address is required!' }),
+});
+
+// ----------------------------------------------------------------------
 
 type Props = Omit<DialogProps, 'children' | 'onClose'> & {
   onClose: VoidFunction;
+  onInfo: (info: ICustomerCheckout & { id: number }) => void;
 };
-export default function CartDialogForm({ onClose, ...props }: Props) {
+export default function CartDialogForm({ onClose, onInfo: onSubmitEvent, ...props }: Props) {
   const theme = useTheme();
+  const defaultValues = useMemo(
+    () => ({
+      fullName: '',
+      email: '',
+      phoneNumber: '',
+      shippingAddress: '',
+    }),
+    []
+  );
+  const methods = useForm<CustomerInfoSchemaType>({
+    mode: 'all',
+    resolver: zodResolver(customerInfoSchema),
+    defaultValues,
+  });
+
+  const {
+    reset,
+    setValue,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = methods;
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [props.open, defaultValues, reset]);
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const response = await createCustomerInfo(data);
+      onSubmitEvent(response.details);
+      onClose();
+      reset();
+      toast.success('Add your info!');
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
   return (
     <Dialog
       {...props}
@@ -76,51 +152,60 @@ export default function CartDialogForm({ onClose, ...props }: Props) {
           Thông tin
         </Box>
       </DialogTitle>
-
-      <Stack
-        sx={{
-          maxWidth: { xs: 160, md: 410 },
-          pt: { xs: pxToRem(28), md: pxToRem(54) },
-          mx: 'auto',
-        }}
-        width={1}
-        spacing={{ xs: pxToRem(9.5), md: pxToRem(18) }}
-      >
-        <FieldBlock label="Họ và Tên" />
-        <FieldBlock label="Địa chỉ" />
-        <FieldBlock label="Số điện thoại" />
-        <FieldBlock label="Gmail " />
-
-        <ContainedButton
-          smallFontSize
+      <Form methods={methods} onSubmit={onSubmit}>
+        <Stack
           sx={{
-            mt: pxToRem(76 - 18),
-            borderRadius: 0,
-            py: pxToRem(15),
-            maxWidth: pxToRem(256),
+            maxWidth: { xs: 160, md: 410 },
+            pt: { xs: pxToRem(28), md: pxToRem(54) },
             mx: 'auto',
-            width: 1,
-            lineHeight: '1.51222',
-            [theme.breakpoints.down('md')]: {
-              mt: pxToRem(40 - 9.5),
-              maxWidth: pxToRem(100),
-              fontSize: pxToRem(10),
-              py: pxToRem(8),
-              px: 0,
-            },
           }}
+          width={1}
+          spacing={{ xs: pxToRem(9.5), md: pxToRem(18) }}
         >
-          Xác nhận
-        </ContainedButton>
-      </Stack>
+          <FieldBlock name="fullName" label="Họ và Tên" />
+          <FieldBlock name="shippingAddress" label="Địa chỉ" />
+          <FieldBlock name="phoneNumber" label="Số điện thoại" />
+          <FieldBlock name="email" label="Gmail " />
+
+          <LoadingButton
+            variant="contained"
+            sx={{
+              mt: pxToRem(76 - 18),
+              borderRadius: 0,
+              py: pxToRem(15),
+              maxWidth: pxToRem(256),
+              mx: 'auto',
+              width: 1,
+              fontSize: pxToRem(14),
+              fontWeight: 500,
+              lineHeight: pxToRem(21.17),
+              backgroundColor: 'black',
+              color: 'white',
+              [theme.breakpoints.down('md')]: {
+                mt: pxToRem(40 - 9.5),
+                maxWidth: pxToRem(100),
+                fontSize: pxToRem(10),
+                py: pxToRem(8),
+                width: 1,
+                px: 0,
+              },
+            }}
+            loading={isSubmitting}
+            type="submit"
+          >
+            Xác nhận
+          </LoadingButton>
+        </Stack>
+      </Form>
     </Dialog>
   );
 }
 
 type FieldBlockProps = {
   label: string;
+  name: string;
 };
-function FieldBlock({ label }: FieldBlockProps) {
+function FieldBlock({ label, name }: FieldBlockProps) {
   return (
     <Box>
       <Typography
@@ -132,9 +217,23 @@ function FieldBlock({ label }: FieldBlockProps) {
       >
         {label}
       </Typography>
-      <InputBase
+      <Field.Text
+        name={name}
         fullWidth
-        sx={{ borderRadius: 0, border: '0.5px solid #000000', height: { xs: 22.5, md: 42 } }}
+        sx={{
+          borderRadius: 0,
+          height: { xs: 22.5, md: 42 },
+          '& .MuiInputBase-root': {
+            height: 1,
+          },
+          '& fieldset': {
+            borderRadius: 0,
+            border: '0.5px solid #000000',
+          },
+          '& .MuiFormHelperText-root': {
+            mt: pxToRem(2),
+          },
+        }}
       />
     </Box>
   );

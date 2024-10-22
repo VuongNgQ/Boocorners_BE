@@ -1,19 +1,29 @@
 import type { SxProps } from '@mui/material';
+import type { Product } from 'src/types/product';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import match from 'autosuggest-highlight/match';
+import parse from 'autosuggest-highlight/parse';
 
 import {
   Box,
+  Link,
   TextField,
+  Typography,
   Autocomplete,
   InputAdornment,
   LinearProgress,
   autocompleteClasses,
 } from '@mui/material';
 
+import { paths } from 'src/routes/paths';
+import { RouterLink } from 'src/routes/components';
+
 import { useBoolean } from 'src/hooks/use-boolean';
+import { useDebounce } from 'src/hooks/use-debounce';
 
 import { pxToRem } from 'src/theme/styles';
+import { useGetProductsN } from 'src/actions/product';
 
 import { SvgColor } from 'src/components/svg-color';
 
@@ -22,18 +32,23 @@ type Props = {
 };
 export default function SearchBar({ sx }: Props) {
   const [query, setQuery] = useState('');
-  // const queryDebounce = useDebounce(query, 1000);
-  //  const { tours, toursLoading, toursEmpty } = useSearchTour(queryDebounce);
+  const queryDebounce = useDebounce(query, 1000);
+  const { products, productsLoading, productsEmpty } = useGetProductsN({
+    productName: queryDebounce,
+  });
   const isFocused = useBoolean();
 
-  //  const options = useMemo(() => {
-  //    if (!queryDebounce || toursEmpty) return [];
+  const options = useMemo(() => {
+    if (!queryDebounce || productsEmpty) return [];
 
-  //    if (tours.length) {
-  //      return tours.map((tour) => ({ label: tour.title, value: tour.slug }));
-  //    }
-  //    return [{ label: 'Không tìm thấy tour', value: 'NOT_FOUND' }];
-  //  }, [tours, queryDebounce, toursEmpty]);
+    if (products.length) {
+      return products.map((product: Product) => ({
+        label: product.productName,
+        value: product.id,
+      }));
+    }
+    return [{ label: 'Product not found', value: -1 }];
+  }, [products, queryDebounce, productsEmpty]);
 
   return (
     <Box
@@ -48,9 +63,8 @@ export default function SearchBar({ sx }: Props) {
         freeSolo
         size="small"
         onInputChange={(event, newValue) => setQuery(newValue)}
-        //   options={isFocused.value && queryDebounce ? options : []}
-        options={[]}
-        //   loading={toursLoading}
+        options={isFocused.value && queryDebounce ? options : []}
+        loading={productsLoading}
         value={query}
         inputValue={query}
         // clearOnBlur
@@ -61,7 +75,7 @@ export default function SearchBar({ sx }: Props) {
           </Box>
         }
         filterOptions={(x) => x}
-        //   getOptionDisabled={(option) => option.label === 'Không tìm thấy tour'}
+        getOptionDisabled={(option) => option.label === 'Không tìm thấy tour'}
         slotProps={{
           popper: { placement: 'bottom-start', sx: { minWidth: 320 } },
           paper: { sx: { [` .${autocompleteClasses.option}`]: { pl: 0.75 } } },
@@ -103,41 +117,41 @@ export default function SearchBar({ sx }: Props) {
             }}
           />
         )}
-        //   renderOption={(props, tour, { inputValue }) => {
-        //     const matches = match(tour.label, inputValue, {
-        //       insideWords: true,
-        //     });
-        //     const parts = parse(tour.label, matches);
-        //     return (
-        //       <Box component="li" {...props} key={tour.value}>
-        //         <Link
-        //           component={RouterLink}
-        //           href={paths.main.tour.details(tour.value)}
-        //           sx={{
-        //             '&:hover': {
-        //               textDecoration: 'none',
-        //             },
-        //           }}
-        //         >
-        //           <div key={inputValue}>
-        //             {parts.map((part, index) => (
-        //               <Typography
-        //                 key={index}
-        //                 component="span"
-        //                 color={part.highlight ? 'primary' : 'textPrimary'}
-        //                 sx={{
-        //                   typography: 'body2',
-        //                   fontWeight: part.highlight ? 'fontWeightSemiBold' : 'fontWeightMedium',
-        //                 }}
-        //               >
-        //                 {part.text}
-        //               </Typography>
-        //             ))}
-        //           </div>
-        //         </Link>
-        //       </Box>
-        //     );
-        //   }}
+        renderOption={(props, product, { inputValue }) => {
+          const matches = match(product.label, inputValue, {
+            insideWords: true,
+          });
+          const parts = parse(product.label, matches);
+          return (
+            <Box component="li" {...props} key={product.value}>
+              <Link
+                component={RouterLink}
+                href={paths.main.shop.details(product.value)}
+                sx={{
+                  '&:hover': {
+                    textDecoration: 'none',
+                  },
+                }}
+              >
+                <div key={inputValue}>
+                  {parts.map((part, index) => (
+                    <Typography
+                      key={index}
+                      component="span"
+                      color={part.highlight ? 'primary' : 'textPrimary'}
+                      sx={{
+                        typography: 'body2',
+                        fontWeight: part.highlight ? 'fontWeightSemiBold' : 'fontWeightMedium',
+                      }}
+                    >
+                      {part.text}
+                    </Typography>
+                  ))}
+                </div>
+              </Link>
+            </Box>
+          );
+        }}
       />
     </Box>
   );

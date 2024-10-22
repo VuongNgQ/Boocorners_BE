@@ -60,11 +60,13 @@ export default function ProductCard({ product, visibleByDefault, sx }: Props) {
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
+              minHeight: pxToRem(60.48), // 2 lines * lineHeight
               [theme.breakpoints.down('md')]: {
                 mt: pxToRem(9),
                 fontWeight: 700,
                 fontSize: pxToRem(16),
                 lineHeight: pxToRem(24.19),
+                minHeight: pxToRem(48.38), // 2 lines * lineHeight (for small screens)
               },
             }}
           >

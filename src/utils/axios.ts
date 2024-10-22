@@ -65,4 +65,13 @@ export const endpoints = {
     details: '/api/categories',
     search: '/api/categories',
   },
+  customer: {
+    create: '/api/customer-info',
+  },
+  cart: {
+    batch: '/api/cart/batch',
+  },
+  order: {
+    create: '/api/order/create',
+  },
 };
