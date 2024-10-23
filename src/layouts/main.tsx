@@ -199,12 +199,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
                 }}
               >
                 <Box component="li">
-                  <Link component={RouterLink} href="." color="inherit">
+                  <Link component={RouterLink} href="./shop" color="inherit">
                     New Arrival
                   </Link>
                 </Box>
                 <Box component="li">
-                  <Link component={RouterLink} href="." color="inherit">
+                  <Link component={RouterLink} href="./shop" color="inherit">
                     On Sale
                   </Link>
                 </Box>
