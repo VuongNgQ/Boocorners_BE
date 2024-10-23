@@ -133,7 +133,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                   height: { xs: pxToRem(15), md: pxToRem(22.63) },
                 }}
               >
-                <Box
+                {/* <Box
                   component="img"
                   alt="Heart icon"
                   src="/assets/icons/heart.png"
@@ -142,7 +142,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                     width: 1,
                     height: 1,
                   }}
-                />
+                /> */}
               </Box>
               <Box
                 sx={{
@@ -167,7 +167,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                   }}
                 />
               </Box>
-              <AuthButton />
+              {/* <AuthButton /> */}
             </Box>
           ),
           bottomArea: (

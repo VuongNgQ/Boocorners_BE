@@ -153,10 +153,7 @@ export default function CartInfo() {
               }}
             >
               {customerInfo === null || customerInfo === 'empty' ? (
-                <>
-                  Nguyễn Thị Anh Thư | (+84) 123 123 123 <br />
-                  23 Tên đường Phường, Quận, Thành phố
-                </>
+                <>Vui lòng nhập thông tin ở đây</>
               ) : (
                 <>
                   {customerInfo.fullName} | {customerInfo.phoneNumber} <br />
