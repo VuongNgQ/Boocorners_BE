@@ -8,6 +8,7 @@ import Grid from '@mui/material/Unstable_Grid2/Grid2';
 
 import { pxToRem } from 'src/theme/styles';
 
+import Link from '@mui/material/Link';
 import { ContainedButton } from '../_partials/buttons';
 
 // ----------------------------------------------------------------------
@@ -97,6 +98,7 @@ export function HomeHero({ sx, ...other }: StackProps) {
                 support your beauty and meet your needs.
               </Typography>
               <ContainedButton
+                href="./shop"
                 sx={{
                   fontSize: pxToRem(16),
                   lineHeight: pxToRem(24.19),
@@ -112,7 +114,7 @@ export function HomeHero({ sx, ...other }: StackProps) {
                 }}
               >
                 Shop Now
-              </ContainedButton>
+              </ContainedButton>{' '}
             </Box>
           </Grid>
           <Grid xs={12} md={6} sx={{ pr: 0 }}>
