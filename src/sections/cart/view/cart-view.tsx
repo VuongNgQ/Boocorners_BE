@@ -63,6 +63,7 @@ export default function CartView() {
               xs: 0,
               md: pxToRem(49),
             },
+            flex: 1,
           }}
         >
           <CartList />

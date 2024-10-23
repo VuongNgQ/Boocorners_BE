@@ -20,19 +20,34 @@ export default function CartList() {
 
   return (
     <Box>
-      <Stack
-        spacing={{
-          xs: pxToRem(16),
-          md: pxToRem(28),
-        }}
-      >
-        {products.map((cart, index) => (
-          <CartItem key={index} isLastItem={index === 2} cart={cart} />
-        ))}
-      </Stack>
+      {products.length === 0 ? (
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 600,
+            width: '100%',
+            textAlign: 'center',
+            paddingTop: '50px',
+          }}
+        >
+          Giỏ hàng của bạn đang trống
+        </Typography>
+      ) : (
+        <Stack
+          spacing={{
+            xs: pxToRem(16),
+            md: pxToRem(28),
+          }}
+        >
+          {products.map((cart, index) => (
+            <CartItem key={index} isLastItem={index === products.length - 1} cart={cart} />
+          ))}
+        </Stack>
+      )}
     </Box>
   );
 }
+
 type CartItemProps = {
   isLastItem: boolean;
   cart: ProductInCart;
