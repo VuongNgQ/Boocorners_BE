@@ -16,9 +16,10 @@ type Props = {
   product: Product;
   visibleByDefault?: boolean;
   sx?: SxProps;
+  previousPage?: string;
 };
 
-export default function ProductCard({ product, visibleByDefault, sx }: Props) {
+export default function ProductCard({ product, visibleByDefault, sx, previousPage }: Props) {
   const theme = useTheme();
 
   const [imageSrc, setImageSrc] = useState(
@@ -33,7 +34,10 @@ export default function ProductCard({ product, visibleByDefault, sx }: Props) {
   };
 
   return (
-    <Link to={`/shop/${product.id}?previous=shop`} style={{ textDecoration: 'none' }}>
+    <Link
+      to={`/shop/${product.id}?previous=${previousPage || 'shop'}`}
+      style={{ textDecoration: 'none' }}
+    >
       {' '}
       {/* Thêm Link ở đây */}
       <Paper sx={sx}>

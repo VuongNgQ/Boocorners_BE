@@ -4,22 +4,21 @@ import { useNavigate, useLocation } from 'react-router';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Box, useTheme, Container, SwipeableDrawer } from '@mui/material';
 
+import { paths } from 'src/routes/paths';
+
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { pxToRem } from 'src/theme/styles';
-import { useGetProductsN } from 'src/actions/product';
 import { useGetCategories } from 'src/actions/category';
+import { useGetProductsNOnSale } from 'src/actions/product';
 
 import { EmptyContent } from 'src/components/empty-content';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import ShopList from '../shop-list';
-import ShopFilter from '../shop-filter';
+import ShopList from 'src/sections/shop/shop-list';
+import ShopFilter from 'src/sections/shop/shop-filter';
 
-type Props = {
-  loading?: boolean;
-};
-export default function ShopView({ loading }: Props) {
+export default function OnSaleView() {
   const theme = useTheme();
   const openMobileFilter = useBoolean();
   const { categories } = useGetCategories();
@@ -82,7 +81,7 @@ export default function ShopView({ loading }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId, minPrice, maxPrice, page, pageSize, minPrice, maxPrice, sort]);
 
-  const { products, productPaginate, productsEmpty } = useGetProductsN({
+  const { products, productPaginate, productsEmpty } = useGetProductsNOnSale({
     page,
     pageSize: pageSize || 12,
     categoryId,
@@ -120,8 +119,8 @@ export default function ShopView({ loading }: Props) {
             name: 'Home',
           },
           {
-            href: '/shop',
-            name: 'Shop',
+            href: paths.main.on_sale.root,
+            name: 'On Sale',
           },
           ...(categoryName ? [{ href: `/shop?categoryId=${categoryId}`, name: categoryName }] : []),
         ]}
@@ -168,6 +167,7 @@ export default function ShopView({ loading }: Props) {
                 totalPages={productPaginate.totalPages}
                 sort={sort}
                 onSortChange={(s) => setSort(s)}
+                previoustPage="on-sale"
               />
             </Box>
           </Grid>

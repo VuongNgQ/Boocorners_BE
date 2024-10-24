@@ -25,6 +25,12 @@ export const paths = {
       root: '/shop',
       details: (slug: any) => `/shop/${slug}`,
     },
+    news_arrival: {
+      root: '/new-arrivals',
+    },
+    on_sale: {
+      root: '/on-sale',
+    },
     cart: {
       root: '/cart',
     },

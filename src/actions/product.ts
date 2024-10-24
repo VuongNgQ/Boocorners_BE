@@ -14,7 +14,15 @@ const swrOptions = {
 };
 
 // ----------------------------------------------------------------------
-
+type FilterListParams = {
+  page?: number;
+  pageSize?: number;
+  productName?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  categoryId?: number;
+  sort?: string;
+};
 type ProductsData = {
   products: IProductItem[];
 };
@@ -114,15 +122,7 @@ export function useGetProductsN({
   productName,
   categoryId,
   sort,
-}: {
-  page?: number;
-  pageSize?: number;
-  productName?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  categoryId?: number;
-  sort?: string;
-}) {
+}: FilterListParams) {
   let url = `${endpoints.product.list}?page=${page}&size=${pageSize}`;
 
   if (categoryId !== undefined && categoryId !== -1) {
@@ -189,6 +189,79 @@ export function useGetProductsN({
 }
 
 // ----------------------------------------------------------------------
+export function useGetProductsNOnSale({
+  page = 0,
+  pageSize = 10,
+  maxPrice,
+  minPrice,
+  productName,
+  categoryId,
+  sort,
+}: FilterListParams) {
+  let url = `${endpoints.product.onSale}?page=${page}&size=${pageSize}`;
+
+  if (categoryId !== undefined && categoryId !== -1) {
+    url = `${endpoints.product.onSale}/category/${categoryId}?page=${page}&size=${pageSize}`;
+  }
+
+  if (minPrice != null) {
+    url += `&minPrice=${minPrice}`;
+  }
+  if (maxPrice != null) {
+    url += `&maxPrice=${maxPrice}`;
+  }
+  if (productName) {
+    url += `&productName=${encodeURIComponent(productName)}`;
+  }
+
+  if (sort) {
+    switch (sort) {
+      case 'most-popular':
+        url += `&sort=createdDate&sort=desc`;
+        break;
+      case 'latest':
+        url += `&sort=createdDate&sort=asc`;
+        break;
+      case 'highest-price':
+        url += `&sort=price&sort=desc`;
+        break;
+      case 'lowest-price':
+        url += `&sort=price&sort=asc`;
+        break;
+      default:
+        break;
+    }
+  }
+
+  const { data, isLoading, error, isValidating } = useSWR<ProductsDataN>(url, fetcher, swrOptions);
+
+  const memoizedValue = useMemo(() => {
+    const paginate =
+      data?.lists?.pageable?.pageNumber !== undefined
+        ? {
+            pageNumber: data.lists.pageable.pageNumber,
+            pageSize: data.lists.pageable.pageSize,
+            totalPages: data.lists.totalPages,
+            totalElements: data.lists.totalElements,
+          }
+        : {
+            pageNumber: 1,
+            pageSize: 0,
+            totalPages: 1,
+            totalElements: 0,
+          };
+    return {
+      products: data?.lists?.content || [],
+      productPaginate: paginate,
+      productsLoading: isLoading,
+      productsError: error,
+      productsValidating: isValidating,
+      productsEmpty: !isLoading && !data?.lists?.content?.length,
+    };
+  }, [data?.lists, error, isLoading, isValidating]);
+
+  return memoizedValue;
+}
 
 export function useGetProductsOnSale() {
   const url = endpoints.product.onSale;
@@ -249,16 +322,30 @@ export function useGetProductsNewArrival({
 
   const { data, isLoading, error, isValidating } = useSWR<ProductsDataN>(url, fetcher, swrOptions);
 
-  const memoizedValue = useMemo(
-    () => ({
-      products: data?.lists.content || [],
+  const memoizedValue = useMemo(() => {
+    const paginate =
+      data?.lists?.pageable?.pageNumber !== undefined
+        ? {
+            pageNumber: data.lists.pageable.pageNumber,
+            pageSize: data.lists.pageable.pageSize,
+            totalPages: data.lists.totalPages,
+            totalElements: data.lists.totalElements,
+          }
+        : {
+            pageNumber: 1,
+            pageSize: 0,
+            totalPages: 1,
+            totalElements: 0,
+          };
+    return {
+      products: data?.lists?.content || [],
+      productPaginate: paginate,
       productsLoading: isLoading,
       productsError: error,
       productsValidating: isValidating,
-      productsEmpty: !isLoading && !data?.lists.content.length,
-    }),
-    [data?.lists, error, isLoading, isValidating]
-  );
+      productsEmpty: !isLoading && !data?.lists?.content?.length,
+    };
+  }, [data?.lists, error, isLoading, isValidating]);
 
   return memoizedValue;
 }

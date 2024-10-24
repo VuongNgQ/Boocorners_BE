@@ -14,14 +14,20 @@ const metadata = { title: `Product details` };
 
 export default function Page() {
   const { slug = '' } = useParams();
-
+  let content;
   // Assume loading is handled within the hook
   const { product, productLoading, productError } = useGetProductById({ id: slug });
 
   if (productLoading) {
-    return (
+    content = (
       <Box
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '50vh',
+          mb: 10,
+        }}
       >
         <CircularProgress />
       </Box>
@@ -29,12 +35,12 @@ export default function Page() {
   }
 
   if (productError) {
-    return <Box>Error loading product details</Box>;
+    content = <Box>Error loading product details</Box>;
   }
 
   if (!product) {
-    return <Box>Product not found</Box>;
-  }
+    content = <Box sx={{ textAlign: 'center', pb: 12, pt: 3 }}>Product not found</Box>;
+  } else content = <ShopDetailsView product={product} />;
 
   return (
     <>
@@ -42,7 +48,7 @@ export default function Page() {
         <title>{metadata.title}</title>
       </Helmet>
       <Box sx={{ height: { xs: 88, md: 200 } }} />
-      <ShopDetailsView product={product} loading={false} error={false} />
+      {content}
     </>
   );
 }
