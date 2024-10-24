@@ -82,6 +82,12 @@ type Category = {
   name: string;
 };
 
+type ProductPhotos = {
+  id: number;
+  path: string;
+  alt: string;
+};
+
 export type Product = {
   id: number;
   productName: string;
@@ -90,10 +96,12 @@ export type Product = {
   category: Category;
   price: number;
   description: string;
+  productDetails: string;
   createdDate: string;
   lastModifiedDate: string;
   imageName: string;
   volume: string;
   sales: any[];
   deleted: boolean;
+  productPhotos: ProductPhotos[];
 };

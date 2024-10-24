@@ -1,6 +1,7 @@
 import type { Product } from 'src/types/product';
 
 import { useMemo } from 'react';
+import { useLocation } from 'react-router';
 
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Box, useTheme, Container, Typography } from '@mui/material';
@@ -25,10 +26,36 @@ type Props = {
 };
 export default function ShopDetailsView({ product, loading, error }: Props) {
   const theme = useTheme();
+  const location = useLocation();
   const { products } = useGetProductsN({ page: 0, pageSize: 4, categoryId: product.category.id });
   const { onAddToCart, isInCart, onDeleteCart } = useCartContext();
 
+  const queryParams = new URLSearchParams(location.search);
+  const previous = queryParams.get('previous');
+
   const isAdd = useMemo(() => !isInCart(product?.id), [product, isInCart]);
+
+  const links = [
+    {
+      href: '/',
+      name: 'Home',
+    },
+    ...(previous
+      ? [
+          {
+            name: previous.charAt(0).toUpperCase() + previous.slice(1),
+            href: `/shop/${product.id}?previous=${previous}`,
+          },
+        ]
+      : []),
+    {
+      name: product.category.name,
+      href: `/shop?categoryId=${product.category.id}`,
+    },
+    {
+      name: product.manufacturer,
+    },
+  ];
 
   return (
     <Container
@@ -41,19 +68,7 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
       }}
     >
       <CustomBreadcrumbs
-        links={[
-          {
-            href: '/',
-            name: 'Home',
-          },
-          {
-            name: product.category.name,
-            href: `/shop?categoryId=${product.category.id}`,
-          },
-          {
-            name: product.manufacturer,
-          },
-        ]}
+        links={links}
         sx={{
           mb: pxToRem(22),
         }}
@@ -61,7 +76,7 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
       <Grid container sx={{ backgroundColor: 'white' }}>
         <Grid xs={12} md={6}>
           <Box sx={{ pr: { xs: 0, md: pxToRem(40) } }}>
-            <ShopDetailsCarousel images={[product.imageName]} />
+            <ShopDetailsCarousel images={product.productPhotos.map((item) => item.path)} />
           </Box>
         </Grid>
         <Grid xs={12} md={6}>
@@ -92,7 +107,7 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
               },
             }}
           >
-            {product.manufacturer}
+            {product.description}
           </Typography>
           <Typography
             sx={{
@@ -140,8 +155,12 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
               mobileSxProps={{
                 px: pxToRem(20),
               }}
+              onClick={() => {
+                onAddToCart(product);
+                window.location.href = '/cart';
+              }}
             >
-              Add to favorites
+              Buy Now
             </TextedButton>
           </Box>
         </Grid>
@@ -170,7 +189,7 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
                 fontSize: pxToRem(16),
                 lineHeight: pxToRem(22),
                 fontWeight: 400,
-                minHeight: { xs: 122, md: 344 },
+                minHeight: { xs: 122, md: 244 },
                 [theme.breakpoints.down('md')]: {
                   mt: pxToRem(33),
                   fontSize: pxToRem(14),
@@ -178,7 +197,7 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
                 },
               }}
             >
-              {product.description}
+              {product.productDetails}
             </Typography>
           </Box>
         </Grid>
@@ -228,6 +247,23 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
               }}
             >
               Thể tích : {product.volume}
+            </Typography>
+            <Typography
+              sx={{
+                ml: {
+                  xs: 'auto',
+                  md: pxToRem(199),
+                },
+                fontSize: pxToRem(16),
+                lineHeight: pxToRem(24.19),
+                fontWeight: 400,
+                [theme.breakpoints.down('md')]: {
+                  fontSize: pxToRem(12),
+                  lineHeight: pxToRem(18.14),
+                },
+              }}
+            >
+              Nhà sản xuất: {product.manufacturer}
             </Typography>
           </Box>
         </Grid>

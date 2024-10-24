@@ -114,6 +114,10 @@ export default function ShopView({ loading }: Props) {
             name: 'Home',
           },
           {
+            href: '/shop',
+            name: 'Shop',
+          },
+          {
             name: categoryName,
           },
         ]}
