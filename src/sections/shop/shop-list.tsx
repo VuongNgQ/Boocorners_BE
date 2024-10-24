@@ -28,7 +28,7 @@ import { OutlinedButton } from '../_partials/buttons';
 type Props = {
   products: Product[];
   onFilterClick: VoidFunction;
-  categoryName: string;
+  categoryName: string | null;
   currentPage: number;
   pageSize: number;
   totalItems: number;
@@ -91,7 +91,7 @@ export default function ShopList({
           }}
           noWrap
         >
-          {categoryName || 'Category'}
+          {categoryName || ''}
         </Typography>
         <Box
           sx={{

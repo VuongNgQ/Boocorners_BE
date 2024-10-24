@@ -34,7 +34,7 @@ export default function ShopView({ loading }: Props) {
   const categoryName = useMemo(() => {
     const cate = categories.find((category) => category.id === categoryId);
     if (cate) return cate.name;
-    return 'Skincare';
+    return null;
   }, [categoryId, categories]);
 
   const syncParamsToURL = () => {
@@ -58,8 +58,13 @@ export default function ShopView({ loading }: Props) {
     const pageSizeFromUrl = params.get('pageSize');
     const sortFromUrl = params.get('sort');
 
-    if (categoryIdFromUrl && Number(categoryIdFromUrl) !== categoryId)
-      setCategoryId(Number(categoryIdFromUrl));
+    if (categoryIdFromUrl) {
+      if (Number(categoryIdFromUrl) !== categoryId) {
+        setCategoryId(Number(categoryIdFromUrl));
+      }
+    } else {
+      setCategoryId(-1);
+    }
     if (minPriceFromUrl && Number(minPriceFromUrl) !== minPrice)
       setMinPrice(Number(minPriceFromUrl));
     if (maxPriceFromUrl && Number(maxPriceFromUrl) !== maxPrice)
@@ -117,9 +122,7 @@ export default function ShopView({ loading }: Props) {
             href: '/shop',
             name: 'Shop',
           },
-          {
-            name: categoryName,
-          },
+          ...(categoryName ? [{ href: `/shop?categoryId=${categoryId}`, name: categoryName }] : []),
         ]}
         sx={{
           mb: pxToRem(22),
@@ -128,6 +131,7 @@ export default function ShopView({ loading }: Props) {
           },
         }}
       />
+
       <Grid container sx={{ backgroundColor: 'white' }}>
         <Grid xs={0} md={3}>
           <Box
