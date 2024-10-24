@@ -189,7 +189,7 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
                 fontSize: pxToRem(16),
                 lineHeight: pxToRem(22),
                 fontWeight: 400,
-                minHeight: { xs: 122, md: 244 },
+                minHeight: { xs: 122, md: 344 },
                 [theme.breakpoints.down('md')]: {
                   mt: pxToRem(33),
                   fontSize: pxToRem(14),
@@ -197,7 +197,12 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
                 },
               }}
             >
-              {product.productDetails}
+              {product.productDetails.split('\n').map((line, index) => (
+                <span key={index}>
+                  {line}
+                  <br />
+                </span>
+              ))}
             </Typography>
           </Box>
         </Grid>
@@ -247,23 +252,6 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
               }}
             >
               Thể tích : {product.volume}
-            </Typography>
-            <Typography
-              sx={{
-                ml: {
-                  xs: 'auto',
-                  md: pxToRem(199),
-                },
-                fontSize: pxToRem(16),
-                lineHeight: pxToRem(24.19),
-                fontWeight: 400,
-                [theme.breakpoints.down('md')]: {
-                  fontSize: pxToRem(12),
-                  lineHeight: pxToRem(18.14),
-                },
-              }}
-            >
-              Nhà sản xuất: {product.manufacturer}
             </Typography>
           </Box>
         </Grid>
