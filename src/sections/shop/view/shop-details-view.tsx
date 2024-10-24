@@ -6,6 +6,8 @@ import { useLocation } from 'react-router';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Box, useTheme, Container, Typography } from '@mui/material';
 
+import { paths } from 'src/routes/paths';
+
 import { fCurrency } from 'src/utils/format-number';
 
 import { pxToRem } from 'src/theme/styles';
@@ -19,12 +21,11 @@ import { TextedButton, ContainedButton } from 'src/sections/_partials/buttons';
 
 import { ShopDetailsCarousel } from '../shop-details-carousel';
 
+export type PreviousPage = 'news-arrivals' | 'on-sale' | 'shop';
 type Props = {
   product: Product;
-  loading: boolean;
-  error: boolean;
 };
-export default function ShopDetailsView({ product, loading, error }: Props) {
+export default function ShopDetailsView({ product }: Props) {
   const theme = useTheme();
   const location = useLocation();
   const { products } = useGetProductsN({ page: 0, pageSize: 4, categoryId: product.category.id });
@@ -34,24 +35,52 @@ export default function ShopDetailsView({ product, loading, error }: Props) {
   const previous = queryParams.get('previous');
 
   const isAdd = useMemo(() => !isInCart(product?.id), [product, isInCart]);
+  const breadCrumbsArr = useMemo(() => {
+    const cateHref = (root: any) => `${root}?categoryId=${product.category.id}`;
+    switch (previous) {
+      case 'news-arrivals':
+        return [
+          {
+            name: 'News Arrivals',
+            href: paths.main.news_arrival.root,
+          },
+          {
+            name: product.category.name,
+            href: cateHref(paths.main.news_arrival.root),
+          },
+        ];
 
+      case 'on-sale':
+        return [
+          {
+            name: 'On Sale',
+            href: paths.main.on_sale.root,
+          },
+          {
+            name: product.category.name,
+            href: cateHref(paths.main.on_sale.root),
+          },
+        ];
+
+      default:
+        return [
+          {
+            name: 'Shop',
+            href: paths.main.shop.root,
+          },
+          {
+            name: product.category.name,
+            href: cateHref(paths.main.shop.root),
+          },
+        ];
+    }
+  }, [previous, product]);
   const links = [
     {
       href: '/',
       name: 'Home',
     },
-    ...(previous
-      ? [
-          {
-            name: previous.charAt(0).toUpperCase() + previous.slice(1),
-            href: `/shop/${product.id}?previous=${previous}`,
-          },
-        ]
-      : []),
-    {
-      name: product.category.name,
-      href: `/shop?categoryId=${product.category.id}`,
-    },
+    ...breadCrumbsArr,
     {
       name: product.manufacturer,
     },

@@ -18,6 +18,10 @@ const Page404 = lazy(() => import('src/pages/error/404'));
 // Shop
 const ShopViewPage = lazy(() => import('src/pages/shop/list'));
 const ShopDetailsPage = lazy(() => import('src/pages/shop/details'));
+// News Arrival
+const NewsArrivalsPage = lazy(() => import('src/pages/news-arrival/list'));
+// On Sale
+const OnSalePage = lazy(() => import('src/pages/on-sale/list'));
 // Cart
 const CartViewPage = lazy(() => import('src/pages/cart/list'));
 // Order
@@ -54,6 +58,14 @@ export const mainRoutes = [
                 path: ':slug',
               },
             ],
+          },
+          {
+            path: 'new-arrivals',
+            element: <NewsArrivalsPage />,
+          },
+          {
+            path: 'on-sale',
+            element: <OnSalePage />,
           },
           {
             path: 'cart',
