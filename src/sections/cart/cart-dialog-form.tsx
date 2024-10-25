@@ -10,9 +10,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Box, Stack, Dialog, useTheme, Typography, DialogTitle } from '@mui/material';
 
 import { pxToRem } from 'src/theme/styles';
-import { createCustomerInfo } from 'src/actions/customer';
 
-import { toast } from 'src/components/snackbar';
 import { SvgColor } from 'src/components/svg-color';
 import { Form, Field } from 'src/components/hook-form';
 
@@ -45,7 +43,7 @@ export const customerInfoSchema = zod.object({
 
 type Props = Omit<DialogProps, 'children' | 'onClose'> & {
   onClose: VoidFunction;
-  onInfo: (info: ICustomerCheckout & { id: number }) => void;
+  onInfo: (info: ICustomerCheckout) => void;
 };
 export default function CartDialogForm({ onClose, onInfo: onSubmitEvent, ...props }: Props) {
   const theme = useTheme();
@@ -66,7 +64,6 @@ export default function CartDialogForm({ onClose, onInfo: onSubmitEvent, ...prop
 
   const {
     reset,
-    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
@@ -77,13 +74,9 @@ export default function CartDialogForm({ onClose, onInfo: onSubmitEvent, ...prop
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const response = await createCustomerInfo(data);
-      onSubmitEvent(response.details);
+      onSubmitEvent(data);
       onClose();
       reset();
-      toast.success('Add your info!');
     } catch (error) {
       console.error(error);
     }

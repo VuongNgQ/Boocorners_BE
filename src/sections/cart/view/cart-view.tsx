@@ -36,7 +36,7 @@ export default function CartView() {
             name: 'Home',
           },
           {
-            name: 'Skincare',
+            name: 'Cart',
           },
         ]}
         sx={{

@@ -1,3 +1,4 @@
+import { paths } from './routes/paths';
 import packageJson from '../package.json';
 // ----------------------------------------------------------------------
 
@@ -53,7 +54,7 @@ export const CONFIG: ConfigValue = {
   auth: {
     method: 'jwt',
     skip: false,
-    redirectPath: '/',
+    redirectPath: paths.dashboard.root,
   },
   /**
    * Mapbox

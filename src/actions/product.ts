@@ -3,7 +3,7 @@ import type { Product, IProductItem } from 'src/types/product';
 import useSWR from 'swr';
 import { useMemo } from 'react';
 
-import { fetcher, endpoints } from 'src/utils/axios';
+import axios, { fetcher, endpoints } from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 
@@ -125,7 +125,7 @@ export function useGetProductsN({
 }: FilterListParams) {
   let url = `${endpoints.product.list}?page=${page}&size=${pageSize}`;
 
-  if (categoryId !== undefined && categoryId !== -1) {
+  if (categoryId && categoryId !== undefined && categoryId !== -1) {
     url = `${endpoints.product.list}/category/${categoryId}?page=${page}&size=${pageSize}`;
   }
 
@@ -158,7 +158,11 @@ export function useGetProductsN({
     }
   }
 
-  const { data, isLoading, error, isValidating } = useSWR<ProductsDataN>(url, fetcher, swrOptions);
+  const { data, isLoading, error, isValidating, mutate } = useSWR<ProductsDataN>(
+    url,
+    fetcher,
+    swrOptions
+  );
 
   const memoizedValue = useMemo(() => {
     const paginate =
@@ -182,8 +186,9 @@ export function useGetProductsN({
       productsError: error,
       productsValidating: isValidating,
       productsEmpty: !isLoading && !data?.lists?.content?.length,
+      productsMutate: mutate,
     };
-  }, [data?.lists, error, isLoading, isValidating]);
+  }, [data?.lists, error, isLoading, isValidating, mutate]);
 
   return memoizedValue;
 }
@@ -318,7 +323,7 @@ export function useGetProductsNewArrival({
   page?: number;
   pageSize?: number;
 }) {
-  const url = `${endpoints.product.list}?page=${page}&size=${pageSize}&sort=createdDate&sort=desc`;
+  const url = `${endpoints.product.list}/new-arrival?page=${page}&size=${pageSize}`;
 
   const { data, isLoading, error, isValidating } = useSWR<ProductsDataN>(url, fetcher, swrOptions);
 
@@ -349,3 +354,27 @@ export function useGetProductsNewArrival({
 
   return memoizedValue;
 }
+
+export const createProduct = async (data: any) => {
+  const url = endpoints.product.create;
+
+  const response = await axios.post(url, data);
+
+  return response.data;
+};
+
+export const updateProduct = async (id: string, data: any) => {
+  const url = id ? endpoints.product.update(id) : '';
+
+  const response = await axios.put(url, data);
+
+  return response.data;
+};
+
+export const deleteProduct = async (id: any) => {
+  const url = id ? endpoints.product.delete(id) : null;
+
+  const response = await axios.delete(url as string);
+
+  return response.data;
+};

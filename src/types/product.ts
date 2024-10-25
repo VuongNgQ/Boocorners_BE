@@ -88,6 +88,15 @@ type ProductPhotos = {
   alt: string;
 };
 
+type Sale = {
+  saleId: number;
+  product: string;
+  discountPercentage: number;
+  startDate: string;
+  endDate: string;
+  active: boolean;
+};
+
 export type Product = {
   id: number;
   productName: string;
@@ -101,7 +110,7 @@ export type Product = {
   lastModifiedDate: string;
   imageName: string;
   volume: string;
-  sales: any[];
+  sales: Sale[];
   deleted: boolean;
   productPhotos: ProductPhotos[];
 };

@@ -107,7 +107,9 @@ export function HeaderBase({
                 alignItems: 'center',
                 gap: { xs: 1, sm: 1.5 },
               }}
-            />
+            >
+              {slots?.rightArea}
+            </Box>
 
             {slots?.rightAreaEnd}
           </>

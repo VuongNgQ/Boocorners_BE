@@ -26,6 +26,7 @@ import { truncateTextMiddle } from 'src/utils/text';
 import { pxToRem } from 'src/theme/styles';
 import { createOrder } from 'src/actions/order';
 import { createCartBatch } from 'src/actions/cart';
+import { createCustomerInfo } from 'src/actions/customer';
 import {
   SHIPPING_COST,
   CHECKOUT_FAILED_RETURN_URL,
@@ -40,9 +41,7 @@ import CartDialogForm from './cart-dialog-form';
 import CustomRadio from './_partials/custom-radio';
 import { ContainedButton } from '../_partials/buttons';
 
-type ICustomerInfo = ICustomerCheckout & {
-  id: number;
-};
+type ICustomerInfo = ICustomerCheckout;
 export default function CartInfo() {
   const [shipCost, setShipCost] = useState(() => SHIPPING_COST || 0);
 
@@ -68,10 +67,13 @@ export default function CartInfo() {
     return total + shipCost;
   }, [isPrepaid.value, total, shipCost]);
   const handleCheckout = async () => {
-    if ((customerInfo as any)?.id) {
+    if (customerInfo && customerInfo !== 'empty') {
       try {
         isSubmitting.onTrue();
-        const customerId = (customerInfo as ICustomerInfo).id;
+
+        const response = await createCustomerInfo(customerInfo);
+        const customerId = response?.details?.id;
+
         const createCartResponse = await createCartBatch({
           cartId: customerId,
           items: products.map((product) => ({
@@ -80,6 +82,7 @@ export default function CartInfo() {
           })),
         });
         const cartId = createCartResponse.details.id as number;
+
         const orderResponse = await createOrder({
           cartId,
           customerInfoId: customerId,
@@ -89,6 +92,7 @@ export default function CartInfo() {
           description: '',
         });
         const qrPageUrl = orderResponse?.data?.checkoutUrl;
+
         if (qrPageUrl) window.location.replace(qrPageUrl);
         else toast.error('Something went wrong! Please try again later.');
       } catch (err) {
