@@ -323,7 +323,7 @@ export function useGetProductsNewArrival({
   page?: number;
   pageSize?: number;
 }) {
-  const url = `${endpoints.product.list}?page=${page}&size=${pageSize}&sort=createdDate&sort=desc`;
+  const url = `${endpoints.product.list}/new-arrival?page=${page}&size=${pageSize}`;
 
   const { data, isLoading, error, isValidating } = useSWR<ProductsDataN>(url, fetcher, swrOptions);
 

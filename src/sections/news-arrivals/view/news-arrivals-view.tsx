@@ -9,8 +9,8 @@ import { paths } from 'src/routes/paths';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { pxToRem } from 'src/theme/styles';
-import { useGetProductsN } from 'src/actions/product';
 import { useGetCategories } from 'src/actions/category';
+import { useGetProductsNewArrival } from 'src/actions/product';
 
 import { EmptyContent } from 'src/components/empty-content';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
@@ -81,13 +81,9 @@ export default function NewsArrivalsView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId, minPrice, maxPrice, page, pageSize, minPrice, maxPrice, sort]);
 
-  const { products, productPaginate, productsEmpty } = useGetProductsN({
+  const { products, productPaginate, productsEmpty } = useGetProductsNewArrival({
     page,
     pageSize: pageSize || 12,
-    categoryId,
-    minPrice,
-    maxPrice,
-    sort,
   });
 
   const onCategorySelect = (id: number) => {
