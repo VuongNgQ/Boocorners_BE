@@ -4,6 +4,8 @@ import { useNavigate, useLocation } from 'react-router';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import { Box, useTheme, Container, SwipeableDrawer } from '@mui/material';
 
+import { paths } from 'src/routes/paths';
+
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { pxToRem } from 'src/theme/styles';
@@ -13,13 +15,10 @@ import { useGetCategories } from 'src/actions/category';
 import { EmptyContent } from 'src/components/empty-content';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import ShopList from '../shop-list';
-import ShopFilter from '../shop-filter';
+import ShopList from 'src/sections/shop/shop-list';
+import ShopFilter from 'src/sections/shop/shop-filter';
 
-type Props = {
-  loading?: boolean;
-};
-export default function ShopView({ loading }: Props) {
+export default function NewsArrivalsView() {
   const theme = useTheme();
   const openMobileFilter = useBoolean();
   const { categories } = useGetCategories();
@@ -28,7 +27,7 @@ export default function ShopView({ loading }: Props) {
   const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
   const [page, setPage] = useState<number | undefined>(undefined);
   const [pageSize, setPageSize] = useState<number | undefined>(undefined);
-  const [sort, setSort] = useState<string>('most-popular');
+  const [sort, setSort] = useState<string>('latest');
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -120,10 +119,17 @@ export default function ShopView({ loading }: Props) {
             name: 'Home',
           },
           {
-            href: '/shop',
-            name: 'Shop',
+            href: paths.main.news_arrival.root,
+            name: 'News Arrival',
           },
-          ...(categoryName ? [{ href: `/shop?categoryId=${categoryId}`, name: categoryName }] : []),
+          ...(categoryName
+            ? [
+                {
+                  href: `${paths.main.news_arrival.root}?categoryId=${categoryId}`,
+                  name: categoryName,
+                },
+              ]
+            : []),
         ]}
         sx={{
           mb: pxToRem(22),
@@ -168,6 +174,7 @@ export default function ShopView({ loading }: Props) {
                 totalPages={productPaginate.totalPages}
                 sort={sort}
                 onSortChange={(s) => setSort(s)}
+                previoustPage="news-arrivals"
               />
             </Box>
           </Grid>

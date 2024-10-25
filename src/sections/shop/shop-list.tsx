@@ -25,10 +25,12 @@ import { useCartContext } from '../cart/context';
 import ProductCard from '../_partials/product-card';
 import { OutlinedButton } from '../_partials/buttons';
 
+import type { PreviousPage } from './view/shop-details-view';
+
 type Props = {
   products: Product[];
   onFilterClick: VoidFunction;
-  categoryName: string;
+  categoryName: string | null;
   currentPage: number;
   pageSize: number;
   totalItems: number;
@@ -36,6 +38,7 @@ type Props = {
   sort: string;
   onPageChange: (page: number) => void;
   onSortChange: (sort: string) => void;
+  previoustPage?: PreviousPage;
 };
 export default function ShopList({
   onFilterClick,
@@ -46,6 +49,7 @@ export default function ShopList({
   pageSize,
   totalItems: count,
   totalPages,
+  previoustPage,
   sort,
   onSortChange,
 }: Props) {
@@ -53,6 +57,20 @@ export default function ShopList({
   const mdUp = useResponsive('up', 'md');
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const sortText = useMemo(() => {
+    switch (sort) {
+      case 'latest':
+        return 'Latest';
+      case 'highest-price':
+        return 'Highest Price';
+      case 'lowest-price':
+        return 'Lowest Price';
+      default:
+        return 'Most Popular';
+    }
+  }, [sort]);
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -91,7 +109,7 @@ export default function ShopList({
           }}
           noWrap
         >
-          {categoryName || 'Category'}
+          {categoryName || ''}
         </Typography>
         <Box
           sx={{
@@ -141,7 +159,7 @@ export default function ShopList({
                   }}
                   onClick={handleClick}
                 >
-                  Most Popular
+                  {sortText}
                 </Box>
                 <SvgColor
                   src="/assets/icons/arrow-down.svg"
@@ -232,7 +250,7 @@ export default function ShopList({
         }}
       >
         {products.map((item, index) => (
-          <ShopItem key={index} index={index} product={item} />
+          <ShopItem key={index} index={index} product={item} previoustPage={previoustPage} />
         ))}
       </Box>
       <Divider
@@ -325,8 +343,9 @@ function ArrowRight() {
 type ShopItemProps = {
   index: number;
   product: Product;
+  previoustPage?: string;
 };
-function ShopItem({ index, product }: ShopItemProps) {
+function ShopItem({ index, product, previoustPage }: ShopItemProps) {
   const theme = useTheme();
 
   const { isInCart, onAddToCart, onDeleteCart } = useCartContext();
@@ -343,6 +362,7 @@ function ShopItem({ index, product }: ShopItemProps) {
       <ProductCard
         product={product}
         visibleByDefault={index < 6}
+        previousPage={previoustPage}
         sx={{
           '& .mnl__image__root': {
             borderRadius: 0,
