@@ -2,6 +2,7 @@
 
 const ROOTS = {
   AUTH: '/auth',
+  DASHBOARD: '/dashboard',
 };
 
 // ----------------------------------------------------------------------
@@ -33,6 +34,31 @@ export const paths = {
     },
     cart: {
       root: '/cart',
+    },
+  },
+  dashboard: {
+    root: ROOTS.DASHBOARD,
+    category: {
+      root: `${ROOTS.DASHBOARD}/category`,
+      list: `${ROOTS.DASHBOARD}/category/list`,
+      create: `${ROOTS.DASHBOARD}/category/create`,
+      edit: (id: any) => `${ROOTS.DASHBOARD}/category/${id}/edit`,
+    },
+    product: {
+      root: `${ROOTS.DASHBOARD}/product`,
+      list: `${ROOTS.DASHBOARD}/product/list`,
+      create: `${ROOTS.DASHBOARD}/product/create`,
+      edit: (id: any) => `${ROOTS.DASHBOARD}/product/${id}/edit`,
+    },
+    order: {
+      root: `${ROOTS.DASHBOARD}/order`,
+      list: `${ROOTS.DASHBOARD}/order/list`,
+      details: (id: any) => `${ROOTS.DASHBOARD}/order/${id}`,
+    },
+    customer: {
+      root: `${ROOTS.DASHBOARD}/customer`,
+      list: `${ROOTS.DASHBOARD}/customer/list`,
+      details: (id: any) => `${ROOTS.DASHBOARD}/customer/${id}`,
     },
   },
 };

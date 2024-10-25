@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
@@ -11,9 +10,7 @@ import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -79,9 +76,9 @@ export function SignInView() {
 
   const renderHead = (
     <Stack spacing={1.5} sx={{ mb: 5 }}>
-      <Typography variant="h5">Login</Typography>
+      <Typography variant="h4">Login</Typography>
 
-      <Stack direction="row" spacing={0.5}>
+      {/* <Stack direction="row" spacing={0.5}>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           Don&apos;t have an account?
         </Typography>
@@ -89,7 +86,7 @@ export function SignInView() {
         <Link component={RouterLink} href={paths.auth.jwt.signUp} variant="subtitle2">
           Sign up
         </Link>
-      </Stack>
+      </Stack> */}
     </Stack>
   );
 

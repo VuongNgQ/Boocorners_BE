@@ -59,6 +59,9 @@ export const endpoints = {
     onSale: '/api/products/on-sale',
     details: '/api/product/details',
     search: '/api/products',
+    create: '/api/products',
+    update: (id: any) => `/api/products/${id}`,
+    delete: (id: any) => `/api/products/${id}`,
   },
   category: {
     list: '/api/categories',

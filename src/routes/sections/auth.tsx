@@ -31,26 +31,26 @@ const authJwt = {
         </GuestGuard>
       ),
     },
-    {
-      path: 'sign-up',
-      element: (
-        <GuestGuard>
-          <AuthCenteredLayout>
-            <Jwt.SignUpPage />
-          </AuthCenteredLayout>
-        </GuestGuard>
-      ),
-    },
-    {
-      path: 'verify-phone',
-      element: (
-        <GuestGuard>
-          <AuthCenteredLayout>
-            <Jwt.VerifyPhonePage />
-          </AuthCenteredLayout>
-        </GuestGuard>
-      ),
-    },
+    // {
+    //   path: 'sign-up',
+    //   element: (
+    //     <GuestGuard>
+    //       <AuthCenteredLayout>
+    //         <Jwt.SignUpPage />
+    //       </AuthCenteredLayout>
+    //     </GuestGuard>
+    //   ),
+    // },
+    // {
+    //   path: 'verify-phone',
+    //   element: (
+    //     <GuestGuard>
+    //       <AuthCenteredLayout>
+    //         <Jwt.VerifyPhonePage />
+    //       </AuthCenteredLayout>
+    //     </GuestGuard>
+    //   ),
+    // },
   ],
 };
 

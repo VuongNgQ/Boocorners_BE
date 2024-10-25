@@ -9,8 +9,8 @@ import { paths } from 'src/routes/paths';
 import { useBoolean } from 'src/hooks/use-boolean';
 
 import { pxToRem } from 'src/theme/styles';
+import { useGetProductsN } from 'src/actions/product';
 import { useGetCategories } from 'src/actions/category';
-import { useGetProductsNOnSale } from 'src/actions/product';
 
 import { EmptyContent } from 'src/components/empty-content';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
@@ -81,7 +81,7 @@ export default function OnSaleView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId, minPrice, maxPrice, page, pageSize, minPrice, maxPrice, sort]);
 
-  const { products, productPaginate, productsEmpty } = useGetProductsNOnSale({
+  const { products, productPaginate, productsEmpty } = useGetProductsN({
     page,
     pageSize: pageSize || 12,
     categoryId,
