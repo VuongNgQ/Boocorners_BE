@@ -11,8 +11,12 @@ import HomeDisplay from '../home-display';
 // ----------------------------------------------------------------------
 
 export function HomeView() {
-  const { products } = useGetProductsN({ page: 0, pageSize: 4 });
-  const { products: productsNewArrival } = useGetProductsNewArrival({ page: 0, pageSize: 4 });
+  const { products, productsEmpty } = useGetProductsN({ page: 0, pageSize: 4 });
+  const { products: productsNewArrival, productsEmpty: productsNewArrivalEmpty } =
+    useGetProductsNewArrival({
+      page: 0,
+      pageSize: 4,
+    });
 
   return (
     <>
@@ -21,12 +25,14 @@ export function HomeView() {
       <HomeHero />
 
       <Stack sx={{ position: 'relative', bgcolor: 'background.default' }}>
-        <HomeDisplay title="New Arrivals" product={productsNewArrival} href="." />
+        {productsNewArrivalEmpty ?? (
+          <HomeDisplay title="New Arrivals" product={productsNewArrival} href="./new-arrivals" />
+        )}
 
         <HomeDisplay
           title="Shop"
           product={products}
-          href="."
+          href="./shop"
           sx={{
             mb: {
               xs: pxToRem(23),

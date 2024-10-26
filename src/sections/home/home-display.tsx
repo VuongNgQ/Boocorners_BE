@@ -49,7 +49,7 @@ export default function HomeDisplay({ title, product, href, sx }: Props) {
       {href && (
         <Button
           component={RouterLink}
-          to="/shop"
+          to={href}
           href={href}
           sx={{
             mt: pxToRem(34),
