@@ -19,8 +19,12 @@ export const ProductSchema = zod.object({
   description: zod.string().min(1, { message: 'Mô tả sản phẩm không được bỏ trống' }),
   productDetails: zod.string().min(1, { message: 'Chi tiết sản phẩm không được bỏ trống' }),
   productPhotos: zod
-    .union([zod.string(), zod.instanceof(File)])
-    .array()
+    .array(
+      zod.object({
+        path: zod.string(),
+        id: zod.number().optional(),
+      })
+    )
     .min(1, { message: 'Ảnh sản phẩm không được bỏ trống' }),
   imageName: zod.union([zod.string().min(1, 'Ảnh bìa không được bỏ trống'), zod.instanceof(File)]),
 });
