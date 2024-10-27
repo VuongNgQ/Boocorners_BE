@@ -15,9 +15,20 @@ export default function ProductDetailsForm() {
               minRows={3}
               maxRows={7}
               InputLabelProps={{ shrink: true }}
-              name="productDetails"
+              name="description"
               label="Mô tả sản phẩm"
               placeholder="Nhập mô tả.."
+            />
+          </Grid>
+          <Grid xs={12}>
+            <Field.Text
+              multiline
+              minRows={3}
+              maxRows={7}
+              InputLabelProps={{ shrink: true }}
+              name="productDetails"
+              label="Chi tiết sản phẩm"
+              placeholder="Nhập chi tiết sản phẩm.."
             />
           </Grid>
         </Grid>
