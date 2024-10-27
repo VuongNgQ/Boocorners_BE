@@ -52,7 +52,7 @@ type ProductData = {
   product: IProductItem;
 };
 
-export function useGetProduct(productId: string) {
+export function useGetProduct(productId: any) {
   const url = productId ? [endpoints.product.details, { params: { productId } }] : '';
 
   const { data, isLoading, error, isValidating } = useSWR<ProductData>(url, fetcher, swrOptions);
@@ -105,10 +105,9 @@ type ProductsDataN = {
   message: string;
   lists: {
     content: Product[];
-    pageable: {
-      pageNumber: number;
-      pageSize: number;
-    };
+
+    number: number;
+    size: number;
     totalPages: number;
     totalElements: number;
   };
@@ -165,20 +164,19 @@ export function useGetProductsN({
   );
 
   const memoizedValue = useMemo(() => {
-    const paginate =
-      data?.lists?.pageable?.pageNumber !== undefined
-        ? {
-            pageNumber: data.lists.pageable.pageNumber,
-            pageSize: data.lists.pageable.pageSize,
-            totalPages: data.lists.totalPages,
-            totalElements: data.lists.totalElements,
-          }
-        : {
-            pageNumber: 1,
-            pageSize: 0,
-            totalPages: 1,
-            totalElements: 0,
-          };
+    const paginate = data?.lists
+      ? {
+          pageNumber: data.lists.number,
+          pageSize: data.lists.size,
+          totalPages: data.lists.totalPages,
+          totalElements: data.lists.totalElements,
+        }
+      : {
+          pageNumber: 0,
+          pageSize: 0,
+          totalPages: 0,
+          totalElements: 0,
+        };
     return {
       products: data?.lists?.content || [],
       productPaginate: paginate,
@@ -241,20 +239,19 @@ export function useGetProductsNOnSale({
   const { data, isLoading, error, isValidating } = useSWR<ProductsDataN>(url, fetcher, swrOptions);
 
   const memoizedValue = useMemo(() => {
-    const paginate =
-      data?.lists?.pageable?.pageNumber !== undefined
-        ? {
-            pageNumber: data.lists.pageable.pageNumber,
-            pageSize: data.lists.pageable.pageSize,
-            totalPages: data.lists.totalPages,
-            totalElements: data.lists.totalElements,
-          }
-        : {
-            pageNumber: 1,
-            pageSize: 0,
-            totalPages: 1,
-            totalElements: 0,
-          };
+    const paginate = data?.lists
+      ? {
+          pageNumber: data.lists.number,
+          pageSize: data.lists.size,
+          totalPages: data.lists.totalPages,
+          totalElements: data.lists.totalElements,
+        }
+      : {
+          pageNumber: 0,
+          pageSize: 0,
+          totalPages: 0,
+          totalElements: 0,
+        };
     return {
       products: data?.lists?.content || [],
       productPaginate: paginate,
@@ -328,20 +325,19 @@ export function useGetProductsNewArrival({
   const { data, isLoading, error, isValidating } = useSWR<ProductsDataN>(url, fetcher, swrOptions);
 
   const memoizedValue = useMemo(() => {
-    const paginate =
-      data?.lists?.pageable?.pageNumber !== undefined
-        ? {
-            pageNumber: data.lists.pageable.pageNumber,
-            pageSize: data.lists.pageable.pageSize,
-            totalPages: data.lists.totalPages,
-            totalElements: data.lists.totalElements,
-          }
-        : {
-            pageNumber: 1,
-            pageSize: 0,
-            totalPages: 1,
-            totalElements: 0,
-          };
+    const paginate = data?.lists
+      ? {
+          pageNumber: data.lists.number,
+          pageSize: data.lists.size,
+          totalPages: data.lists.totalPages,
+          totalElements: data.lists.totalElements,
+        }
+      : {
+          pageNumber: 0,
+          pageSize: 0,
+          totalPages: 0,
+          totalElements: 0,
+        };
     return {
       products: data?.lists?.content || [],
       productPaginate: paginate,
@@ -363,7 +359,7 @@ export const createProduct = async (data: any) => {
   return response.data;
 };
 
-export const updateProduct = async (id: string, data: any) => {
+export const updateProduct = async (id: number, data: any) => {
   const url = id ? endpoints.product.update(id) : '';
 
   const response = await axios.put(url, data);

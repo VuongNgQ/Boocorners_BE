@@ -4,7 +4,7 @@ import { Iconify } from 'src/components/iconify';
 
 type Props = {
   onEdit: (id: any) => any;
-  onDelete: (id: any) => any;
+  onDelete: (row: any) => any;
 };
 export default function tableRowActions({ onDelete, onEdit }: Props) {
   return {
@@ -23,7 +23,7 @@ export default function tableRowActions({ onDelete, onEdit }: Props) {
       <GridActionsCellItem
         icon={<Iconify icon="solar:trash-bin-trash-bold" />}
         label="Xóa"
-        onClick={() => onDelete(params.id)}
+        onClick={() => onDelete(params.row)}
         sx={{ color: 'error.main' }}
       />,
     ],

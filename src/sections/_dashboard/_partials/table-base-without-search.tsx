@@ -7,32 +7,27 @@ import { DataGrid, gridClasses } from '@mui/x-data-grid';
 
 import { EmptyContent } from 'src/components/empty-content';
 
-import TableSearch from './table-search';
-
 type Props = DataGridProps & {
   loading?: boolean;
   totalRecord?: number;
   mutate?: VoidFunction;
 
-  search: string;
   pageSize?: number;
   page?: number;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
-  onSearchChange: (value: string) => void;
 };
-export default function TableBase({
+
+export default function TableBaseWithoutSearch({
   rows,
   columns,
   loading,
   totalRecord,
   mutate,
-  search,
   pageSize,
   page,
   onPageChange,
   onPageSizeChange,
-  onSearchChange,
   slots,
   sx,
   ...dataTableProps
@@ -45,6 +40,7 @@ export default function TableBase({
     }
     return rowCountRef.current;
   }, [totalRecord]);
+
   return (
     <Card
       sx={{
@@ -75,7 +71,6 @@ export default function TableBase({
           onPageSizeChange !== undefined &&
           onPageChange !== undefined && {
             paginationModel: { page, pageSize },
-
             onPaginationModelChange: (params) => {
               onPageSizeChange(params.pageSize);
               onPageChange(params.page);
@@ -84,20 +79,12 @@ export default function TableBase({
         paginationMode="server"
         filterMode="server"
         slots={{
-          toolbar: () => (
-            <TableSearch
-              onPageChange={onPageChange || (() => {})}
-              search={search}
-              onSearch={onSearchChange}
-            />
-          ),
           noRowsOverlay: () => <EmptyContent />,
           noResultsOverlay: () => <EmptyContent title="No results" />,
           ...slots,
         }}
         sx={{
           [`& .${gridClasses.cell}`]: { alignItems: 'center', display: 'inline-flex' },
-
           ...sx,
         }}
         {...dataTableProps}

@@ -1,35 +1,60 @@
+import { useState } from 'react';
+
+import { Button } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 
-import { CONFIG } from 'src/config-global';
-import { DashboardContent } from 'src/layouts/dashboard';
-import {
-  _analyticTasks,
-  _analyticPosts,
-  _analyticTraffic,
-  _analyticOrderTimeline,
-} from 'src/_mock';
+import { fCurrency } from 'src/utils/format-number';
 
-import { AnalyticsNews } from '../analytics-news';
-import { AnalyticsTasks } from '../analytics-tasks';
-import { AnalyticsCurrentVisits } from '../analytics-current-visits';
-import { AnalyticsOrderTimeline } from '../analytics-order-timeline';
+import { CONFIG } from 'src/config-global';
+import { useGetStatistic } from 'src/actions/statistic';
+import { DashboardContent } from 'src/layouts/dashboard';
+
 import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
 import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
-import { AnalyticsTrafficBySite } from '../analytics-traffic-by-site';
-import { AnalyticsCurrentSubject } from '../analytics-current-subject';
-import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 
 // ----------------------------------------------------------------------
 
 export function OverviewAnalyticsView() {
+  const { statistic } = useGetStatistic();
+  const timeframeLabels: any = {
+    day: 'ngày',
+    month: 'tháng',
+    year: 'năm',
+  };
+
+  const colors = ['#4caf50', '#2196f3', '#ff9800', '#f44336', '#9c27b0'];
+
+  const [revenueTimeframe, setRevenueTimeframe] = useState('day');
+  const [ordersTimeframe, setOrdersTimeframe] = useState('day');
+
+  const mapDataByTimeframe = (timeframe: any, data: any) => {
+    const categories: any = [];
+    const seriesData: any = [];
+
+    Object.entries(data?.[timeframe] || {}).forEach(([key, value]) => {
+      let label;
+      if (timeframe === 'day') label = `Ngày ${key}`;
+      if (timeframe === 'month') label = `Tháng ${key}`;
+      if (timeframe === 'year') label = `Năm ${key}`;
+
+      categories.push(label);
+      seriesData.push(value);
+    });
+
+    return { categories, seriesData };
+  };
+
+  const revenueMapped = mapDataByTimeframe(revenueTimeframe, statistic?.revenueByTime);
+  const ordersMapped = mapDataByTimeframe(ordersTimeframe, statistic?.ordersByTime);
+
   return (
     <DashboardContent maxWidth="xl">
       <Grid container spacing={3}>
         <Grid xs={12} sm={6} md={3}>
           <AnalyticsWidgetSummary
-            title="Weekly sales"
-            percent={2.6}
-            total={714000}
+            title="Tổng doanh thu"
+            percent={0}
+            total={fCurrency(statistic?.totalRevenue)}
             icon={
               <img alt="icon" src={`${CONFIG.site.basePath}/assets/icons/glass/ic-glass-bag.svg`} />
             }
@@ -42,9 +67,9 @@ export function OverviewAnalyticsView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AnalyticsWidgetSummary
-            title="New users"
+            title="Số khách mua hàng"
             percent={-0.1}
-            total={1352831}
+            total={`${statistic?.soldToCustomers}`}
             color="secondary"
             icon={
               <img
@@ -61,9 +86,9 @@ export function OverviewAnalyticsView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AnalyticsWidgetSummary
-            title="Purchase orders"
-            percent={2.8}
-            total={1723315}
+            title="Tổng đơn hàng"
+            percent={-0.1}
+            total={`${statistic?.totalOrders}`}
             color="warning"
             icon={
               <img alt="icon" src={`${CONFIG.site.basePath}/assets/icons/glass/ic-glass-buy.svg`} />
@@ -77,9 +102,9 @@ export function OverviewAnalyticsView() {
 
         <Grid xs={12} sm={6} md={3}>
           <AnalyticsWidgetSummary
-            title="Messages"
-            percent={3.6}
-            total={234}
+            title="Tổng sản phẩm bán ra"
+            percent={2.8}
+            total={`${statistic?.totalProductsSold}`}
             color="error"
             icon={
               <img
@@ -94,76 +119,72 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
-        <Grid xs={12} md={6} lg={4}>
-          <AnalyticsCurrentVisits
-            title="Current visits"
-            chart={{
-              series: [
-                { label: 'America', value: 3500 },
-                { label: 'Asia', value: 2500 },
-                { label: 'Europe', value: 1500 },
-                { label: 'Africa', value: 500 },
-              ],
-            }}
-          />
-        </Grid>
+        <Grid xs={12} md={6} lg={6}>
+          {/* Nút chọn khoảng thời gian cho doanh thu */}
+          <div>
+            <Button
+              variant={revenueTimeframe === 'day' ? 'contained' : 'outlined'}
+              onClick={() => setRevenueTimeframe('day')}
+            >
+              Ngày
+            </Button>
+            <Button
+              variant={revenueTimeframe === 'month' ? 'contained' : 'outlined'}
+              onClick={() => setRevenueTimeframe('month')}
+            >
+              Tháng
+            </Button>
+            <Button
+              variant={revenueTimeframe === 'year' ? 'contained' : 'outlined'}
+              onClick={() => setRevenueTimeframe('year')}
+            >
+              Năm
+            </Button>
+          </div>
 
-        <Grid xs={12} md={6} lg={8}>
           <AnalyticsWebsiteVisits
-            title="Website visits"
-            subheader="(+43%) than last year"
+            title="Doanh thu theo thời gian"
+            subheader={`(Hiển thị theo ${timeframeLabels[revenueTimeframe]})`}
             chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-              series: [
-                { name: 'Team A', data: [43, 33, 22, 37, 67, 68, 37, 24, 55] },
-                { name: 'Team B', data: [51, 70, 47, 67, 40, 37, 24, 70, 24] },
-              ],
+              colors,
+              categories: revenueMapped.categories,
+              series: [{ name: 'Doanh thu', data: revenueMapped.seriesData }],
             }}
           />
         </Grid>
 
-        <Grid xs={12} md={6} lg={8}>
-          <AnalyticsConversionRates
-            title="Conversion rates"
-            subheader="(+43%) than last year"
+        <Grid xs={12} md={6} lg={6}>
+          {/* Nút chọn khoảng thời gian cho đơn hàng */}
+          <div>
+            <Button
+              variant={ordersTimeframe === 'day' ? 'contained' : 'outlined'}
+              onClick={() => setOrdersTimeframe('day')}
+            >
+              Ngày
+            </Button>
+            <Button
+              variant={ordersTimeframe === 'month' ? 'contained' : 'outlined'}
+              onClick={() => setOrdersTimeframe('month')}
+            >
+              Tháng
+            </Button>
+            <Button
+              variant={ordersTimeframe === 'year' ? 'contained' : 'outlined'}
+              onClick={() => setOrdersTimeframe('year')}
+            >
+              Năm
+            </Button>
+          </div>
+
+          <AnalyticsWebsiteVisits
+            title="Đơn hàng theo thời gian"
+            subheader={`(Hiển thị theo ${timeframeLabels[ordersTimeframe]})`}
             chart={{
-              categories: ['Italy', 'Japan', 'China', 'Canada', 'France'],
-              series: [
-                { name: '2022', data: [44, 55, 41, 64, 22] },
-                { name: '2023', data: [53, 32, 33, 52, 13] },
-              ],
+              colors,
+              categories: ordersMapped.categories,
+              series: [{ name: 'Đơn hàng', data: ordersMapped.seriesData }],
             }}
           />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={4}>
-          <AnalyticsCurrentSubject
-            title="Current subject"
-            chart={{
-              categories: ['English', 'History', 'Physics', 'Geography', 'Chinese', 'Math'],
-              series: [
-                { name: 'Series 1', data: [80, 50, 30, 40, 100, 20] },
-                { name: 'Series 2', data: [20, 30, 40, 80, 20, 80] },
-                { name: 'Series 3', data: [44, 76, 78, 13, 43, 10] },
-              ],
-            }}
-          />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={8}>
-          <AnalyticsNews title="News" list={_analyticPosts} />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={4}>
-          <AnalyticsOrderTimeline title="Order timeline" list={_analyticOrderTimeline} />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={4}>
-          <AnalyticsTrafficBySite title="Traffic by site" list={_analyticTraffic} />
-        </Grid>
-
-        <Grid xs={12} md={6} lg={8}>
-          <AnalyticsTasks title="Tasks" list={_analyticTasks} />
         </Grid>
       </Grid>
     </DashboardContent>

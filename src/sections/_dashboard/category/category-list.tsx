@@ -1,6 +1,6 @@
-import type { Product } from 'src/types/product';
+import type { Category } from 'src/types/category';
 
-import { useState, useCallback } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 
 import { Card } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
@@ -11,54 +11,39 @@ import { useRouter } from 'src/routes/hooks';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
-import { deleteProduct } from 'src/actions/product';
+import { deleteCategory } from 'src/actions/category';
 
 import { toast } from 'src/components/snackbar';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 
 import { baseColumns } from './table/columns';
 import TableBase from '../_partials/table-base';
+import TableSearch from '../_partials/table-search';
 import tableRowActions from '../_partials/table-row-actions';
-import ProductTableToolbar from './table/product-table-toolbar';
 
 type Props = {
-  data: Product[];
+  data: Category[];
   mutate: any;
   loading: boolean;
   rowCount: number;
-
-  categoryId: number;
-  onCategoryChange: (value: number) => void;
-  search: string;
-  pageSize: number;
-  page: number;
-  onPageChange: (page: number) => void;
-  onPageSizeChange: (size: number) => void;
-  onSearchChange: (value: string) => void;
 };
-export default function ProductList({
-  data,
-  mutate,
-  loading,
-  rowCount,
-  search,
-  pageSize,
-  page,
-  categoryId,
-  onCategoryChange,
-  onPageChange,
-  onPageSizeChange,
-  onSearchChange,
-}: Props) {
+export default function CategoryList({ data, mutate, loading, rowCount }: Props) {
+  const [search, setSearch] = useState('');
+
   const router = useRouter();
 
   const isDeleting = useBoolean();
 
-  const [deleted, setDeleted] = useState<Product | null>(null);
+  const [deleted, setDeleted] = useState<Category | null>(null);
+
+  const dataFilter = useMemo(
+    () => data.filter((row) => row.name.toLowerCase().includes(search.toLowerCase())),
+    [data, search]
+  );
 
   const handleEditRow = useCallback(
     (id: any) => {
-      router.push(paths.dashboard.product.edit(id));
+      router.push(paths.dashboard.category.edit(id));
     },
     [router]
   );
@@ -67,7 +52,7 @@ export default function ProductList({
     async (id: any) => {
       try {
         isDeleting.onTrue();
-        await deleteProduct(id);
+        await deleteCategory(id);
         mutate();
         toast.success('Xóa thành công!');
       } catch {
@@ -95,7 +80,7 @@ export default function ProductList({
         }}
       >
         <TableBase
-          rows={data}
+          rows={dataFilter}
           columns={[
             ...baseColumns,
             tableRowActions({
@@ -105,25 +90,18 @@ export default function ProductList({
           ]}
           loading={loading}
           mutate={mutate}
-          search={search}
+          search=""
           totalRecord={rowCount}
-          page={page}
-          pageSize={pageSize}
-          onPageChange={onPageChange}
-          onPageSizeChange={onPageSizeChange}
-          onSearchChange={onSearchChange}
+          onSearchChange={() => {}}
+          density="standard"
+          sx={{ [`& .${gridClasses.cell}`]: { alignItems: 'center', display: 'inline-flex' } }}
+          paginationMode="client"
+          filterMode="client"
           slots={{
             toolbar: () => (
-              <ProductTableToolbar
-                search={search}
-                onSearchChange={onSearchChange}
-                onPageChange={onPageChange}
-                categoryId={categoryId}
-                onCategoryChange={onCategoryChange}
-              />
+              <TableSearch search={search} onSearch={setSearch} onPageChange={() => {}} />
             ),
           }}
-          sx={{ [`& .${gridClasses.cell}`]: { alignItems: 'center', display: 'inline-flex' } }}
         />
       </Card>
       <ConfirmDialog
@@ -135,7 +113,7 @@ export default function ProductList({
         title="Xóa"
         content={
           <>
-            Bạn có chắc chắn muốn xóa <strong>{deleted?.productName}</strong>?
+            Bạn có chắc chắn muốn xóa <strong>{deleted?.name}</strong>?
           </>
         }
         action={

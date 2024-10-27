@@ -11,6 +11,7 @@ export type BreadcrumbsLinkProps = {
 
 export type CustomBreadcrumbsProps = BreadcrumbsProps & {
   heading?: string;
+  loading?: boolean;
   moreLink?: string[];
   activeLast?: boolean;
   action?: React.ReactNode;

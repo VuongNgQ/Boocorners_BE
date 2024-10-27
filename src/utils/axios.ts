@@ -54,6 +54,9 @@ export const endpoints = {
     search: '/api/post/search',
   },
   // dùng
+  file: {
+    upload: '/api/file/import',
+  },
   product: {
     list: '/api/products',
     onSale: '/api/products/on-sale',
@@ -67,6 +70,9 @@ export const endpoints = {
     list: '/api/categories',
     details: '/api/categories',
     search: '/api/categories',
+    create: '/api/categories',
+    update: (id: any) => `/api/categories/${id}`,
+    delete: (id: any) => `/api/categories/${id}`,
   },
   customer: {
     create: '/api/customer-info',
@@ -75,6 +81,10 @@ export const endpoints = {
     batch: '/api/cart/batch',
   },
   order: {
+    list: '/api/order',
     create: '/api/order/create',
+  },
+  statistic: {
+    detail: 'api/dashboard',
   },
 };
