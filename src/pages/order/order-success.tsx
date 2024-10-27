@@ -15,7 +15,7 @@ const metadata = { title: `Thanks for buying!` };
 export default function Page() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const orderID = queryParams.get('orderCode');
+  const orderID = queryParams.get('id');
 
   useEffect(() => {
     const handleCancelOrder = () => {
