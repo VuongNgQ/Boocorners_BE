@@ -46,8 +46,8 @@ export default function ProductCreateEditForm({
       productDetails: currentRecord?.productDetails || '',
       description: currentRecord?.description || '',
       productPhotos: currentRecord?.productPhotos
-        ? currentRecord.productPhotos.map((photo) => photo.path)
-        : [''],
+        ? currentRecord.productPhotos.map((photo) => ({ id: photo.id, path: photo.path }))
+        : [],
       imageName: currentRecord?.imageName || '',
     }),
     [currentRecord]
@@ -84,6 +84,7 @@ export default function ProductCreateEditForm({
         await updateProduct(currentRecord.id, {
           ...data,
           productPhotos: data.productPhotos.map((photo) => ({
+            ...photo,
             path: photo,
             alt: data.productName,
           })),

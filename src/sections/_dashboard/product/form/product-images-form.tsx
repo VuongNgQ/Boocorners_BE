@@ -44,7 +44,7 @@ export default function ProductImagesForm() {
                 <Field.Text
                   key={field.id}
                   InputLabelProps={{ shrink: true }}
-                  name={`productPhotos[${index}]`}
+                  name={`productPhotos[${index}].path`}
                   label="Link ảnh"
                   placeholder="Nhập link.."
                   InputProps={{
