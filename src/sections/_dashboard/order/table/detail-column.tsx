@@ -76,7 +76,6 @@ export const detailColumns: GridColDef<Product>[] = [
     field: 'totalPrice',
     headerName: 'Tổng tiền',
     flex: 1,
-
     headerAlign: 'center',
     align: 'center',
     valueFormatter: (param) => fCurrency(param),

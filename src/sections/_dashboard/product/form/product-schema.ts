@@ -16,7 +16,8 @@ export const ProductSchema = zod.object({
     invalid_type_error: 'Loại sản phẩm không được bỏ trống',
   }),
   volume: zod.string().min(1, { message: 'Thể tích không được bỏ trống' }),
-  productDetails: zod.string().min(1, { message: 'Mô tả sản phẩm không được bỏ trống' }),
+  description: zod.string().min(1, { message: 'Mô tả sản phẩm không được bỏ trống' }),
+  productDetails: zod.string().min(1, { message: 'Chi tiết sản phẩm không được bỏ trống' }),
   productPhotos: zod
     .union([zod.string(), zod.instanceof(File)])
     .array()
