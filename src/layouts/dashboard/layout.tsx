@@ -21,7 +21,6 @@ import { NavVertical } from './nav-vertical';
 import { HeaderBase } from '../core/header-base';
 import { Searchbar } from '../components/searchbar';
 import { LayoutSection } from '../core/layout-section';
-import { AccountDrawer } from '../components/account-drawer';
 import { navData as dashboardNavData } from '../config-nav-dashboard';
 
 // ----------------------------------------------------------------------
@@ -73,12 +72,12 @@ export function DashboardLayout({ sx, children, data }: DashboardLayoutProps) {
                 </Alert>
               ),
               leftAreaEnd: <Searchbar data-slot="searchbar" data={navData} />,
-              rightArea: (
-                <>
-                  {/* -- Account drawer -- */}
-                  <AccountDrawer data-slot="account" />
-                </>
-              ),
+              // rightArea: (
+              //   <>
+              //     {/* -- Account drawer -- */}
+              //     <AccountDrawer data-slot="account" />
+              //   </>
+              // ),
             }}
             slotProps={{
               toolbar: {

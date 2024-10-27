@@ -2,6 +2,7 @@ import type { Breakpoint } from '@mui/material/styles';
 import type { NavSectionProps } from 'src/components/nav-section';
 
 import Box from '@mui/material/Box';
+import { Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { varAlpha, hideScrollY } from 'src/theme/styles';
@@ -9,6 +10,8 @@ import { varAlpha, hideScrollY } from 'src/theme/styles';
 import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 import { NavSectionMini, NavSectionVertical } from 'src/components/nav-section';
+
+import { signOut } from 'src/auth/context/jwt';
 
 import { NavToggleButton } from '../components/nav-toggle-button';
 
@@ -35,6 +38,11 @@ export function NavVertical({
 }: NavVerticalProps) {
   const theme = useTheme();
 
+  const handleLogout = () => {
+    signOut();
+    window.location.reload();
+  };
+
   const renderNavVertical = (
     <>
       {slots?.topArea ?? (
@@ -45,9 +53,19 @@ export function NavVertical({
 
       <Scrollbar fillContent>
         <NavSectionVertical data={data} sx={{ px: 2, flex: '1 1 auto' }} {...other} />
-
         {slots?.bottomArea}
       </Scrollbar>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', pb: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleLogout}
+          sx={{ width: '60%', minWidth: '150px' }}
+        >
+          Logout
+        </Button>
+      </Box>
     </>
   );
 
