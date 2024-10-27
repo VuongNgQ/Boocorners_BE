@@ -102,3 +102,17 @@ export async function createOrder(payload: {
   const response = await axios.post(ENDPOINT.create, payload);
   return response?.data;
 }
+
+// ----------------------------------------------------------------------
+
+export async function confirmOrder(orderId: string) {
+  const response = await axios.put(`${ENDPOINT.list}/${orderId}/confirm`);
+  return response?.data;
+}
+
+// ----------------------------------------------------------------------
+
+export async function cancelOrder(orderId: string) {
+  const response = await axios.put(`${ENDPOINT.list}/${orderId}/cancel`);
+  return response?.data;
+}
