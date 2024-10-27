@@ -22,10 +22,8 @@ export default function ProductTableToolbar({
   return (
     <TableSearch
       search={search}
-      onSearch={(query) => {
-        onPageChange(0);
-        onSearchChange(query);
-      }}
+      onSearch={onSearchChange}
+      onPageChange={onPageChange}
       moreFilters={
         <FormControl
           sx={{
@@ -33,15 +31,16 @@ export default function ProductTableToolbar({
             maxWidth: { md: 250 },
           }}
         >
-          <InputLabel id="category">Filter by category</InputLabel>
+          <InputLabel id="category">Lọc theo loại</InputLabel>
           <Select
             labelId="category"
             fullWidth
             value={categoryId}
             onChange={(event) => {
               onCategoryChange(event.target.value as any);
+              onPageChange(0);
             }}
-            label="Filter by category"
+            label="Lọc theo loại"
           >
             {categories.map((category) => (
               <MenuItem key={category.id} value={category.id}>

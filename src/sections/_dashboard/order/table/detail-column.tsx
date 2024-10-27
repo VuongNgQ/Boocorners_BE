@@ -4,16 +4,15 @@ import type { Category } from 'src/types/category';
 
 import { Box, Typography } from '@mui/material';
 
-import { fDateTime } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
 
 import { maxLine, pxToRem } from 'src/theme/styles';
 
-export const baseColumns: GridColDef<Product>[] = [
+export const detailColumns: GridColDef<Product>[] = [
   {
     field: 'imageName',
     headerName: 'Ảnh bìa',
-    width: 120,
+    width: 100,
     renderCell: (params) => (
       <Box sx={{ position: 'relative' }}>
         <Box
@@ -31,9 +30,9 @@ export const baseColumns: GridColDef<Product>[] = [
   },
   {
     field: 'productName',
-    headerName: 'Tên',
-    minWidth: 200,
-    flex: 4,
+    headerName: 'Sản phẩm',
+    minWidth: 150,
+    flex: 1,
     renderCell: (params) => (
       <Box maxWidth={1} width={1}>
         <Typography
@@ -52,35 +51,34 @@ export const baseColumns: GridColDef<Product>[] = [
   {
     field: 'category',
     headerName: 'Loại',
-    minWidth: 200,
-    flex: 2,
+    minWidth: 100,
+
     headerAlign: 'center',
     align: 'center',
     valueGetter: (value: Category) => value?.name,
   },
   {
-    field: 'quantity',
-    headerName: 'Só lượng',
-    minWidth: 100,
-    headerAlign: 'center',
-    align: 'center',
-  },
-  {
     field: 'price',
     headerName: 'Giá',
     minWidth: 150,
-    flex: 2,
+
     headerAlign: 'center',
     align: 'center',
     valueFormatter: (value: any) => fCurrency(value),
   },
   {
-    field: 'lastModifiedDate',
-    headerName: 'Ngày chỉnh sủa cuối',
-    minWidth: 180,
-    flex: 1,
+    field: 'quantity',
+    headerName: 'Số lượng',
     headerAlign: 'center',
     align: 'center',
-    renderCell: (params: any) => fDateTime(params.value),
+  },
+  {
+    field: 'totalPrice',
+    headerName: 'Tổng tiền',
+    flex: 1,
+
+    headerAlign: 'center',
+    align: 'center',
+    valueFormatter: (param) => fCurrency(param),
   },
 ];

@@ -47,39 +47,39 @@ export const navData = [
    */
   {
     subheader: 'Tổng quan',
-    items: [{ title: 'Statistical', path: paths.dashboard.root, icon: ICONS.dashboard }],
+    items: [{ title: 'Thống kê', path: paths.dashboard.root, icon: ICONS.dashboard }],
   },
   /**
    * Management
    */
   {
-    subheader: 'Quản lí',
+    subheader: 'Quản lý',
     items: [
       {
-        title: 'Category',
+        title: 'Loại sản phẩm',
         path: paths.dashboard.category.root,
         icon: ICONS.menuItem,
         children: [
-          { title: 'List', path: paths.dashboard.category.list },
-          { title: 'Create', path: paths.dashboard.category.create },
+          { title: 'Danh sách', path: paths.dashboard.category.list },
+          { title: 'Tạo mới', path: paths.dashboard.category.create },
         ],
       },
       {
-        title: 'Product',
+        title: 'Sản phẩm',
         path: paths.dashboard.product.root,
         icon: ICONS.product,
         children: [
-          { title: 'List', path: paths.dashboard.product.list },
-          { title: 'Create', path: paths.dashboard.product.create },
+          { title: 'Danh sách', path: paths.dashboard.product.list },
+          { title: 'Tạo mới', path: paths.dashboard.product.create },
         ],
       },
       {
-        title: 'Order',
+        title: 'Đơn hàng',
         path: paths.dashboard.order.list,
         icon: ICONS.order,
       },
       {
-        title: 'Customer',
+        title: 'Khách hàng',
         path: paths.dashboard.customer.list,
         icon: ICONS.user,
       },

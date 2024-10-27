@@ -14,8 +14,13 @@ import { AuthGuard } from 'src/auth/guard';
 const IndexPage = lazy(() => import('src/pages/dashboard'));
 // Category
 const CategoryListPage = lazy(() => import('src/pages/dashboard/category/list'));
+const CategoryCreatePage = lazy(() => import('src/pages/dashboard/category/create'));
+const CategoryUpdatePage = lazy(() => import('src/pages/dashboard/category/update'));
 // Product
 const ProductListPage = lazy(() => import('src/pages/dashboard/product/list'));
+const ProductCreatePage = lazy(() => import('src/pages/dashboard/product/create'));
+const ProductUpdatePage = lazy(() => import('src/pages/dashboard/product/update'));
+
 // Order
 const OrderListPage = lazy(() => import('src/pages/dashboard/order/list'));
 // Customer
@@ -42,7 +47,8 @@ export const dashboardRoutes = [
         children: [
           { element: <CategoryListPage />, index: true },
           { path: 'list', element: <CategoryListPage /> },
-          // { path: ':id', element: <CategoryDetailsPage /> },
+          { path: 'create', element: <CategoryCreatePage /> },
+          { path: ':id/edit', element: <CategoryUpdatePage /> },
         ],
       },
       {
@@ -50,7 +56,8 @@ export const dashboardRoutes = [
         children: [
           { element: <ProductListPage />, index: true },
           { path: 'list', element: <ProductListPage /> },
-          // { path: ':id', element: <ProductDetailsPage /> },
+          { path: 'create', element: <ProductCreatePage /> },
+          { path: ':id/edit', element: <ProductUpdatePage /> },
         ],
       },
 

@@ -30,11 +30,11 @@ export default function ProductListView() {
   return (
     <DashboardContent maxWidth="xl">
       <CustomBreadcrumbs
-        heading="Product List"
+        heading="Danh sách sản phẩm"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'Product', href: paths.dashboard.product.root },
-          { name: 'List' },
+          { name: 'Sản phẩm', href: paths.dashboard.product.root },
+          { name: 'Danh sách' },
         ]}
         sx={{ mb: { xs: 3, md: 5 } }}
         action={
@@ -44,7 +44,7 @@ export default function ProductListView() {
             href={paths.dashboard.product.create}
             size="large"
           >
-            Add new
+            Tạo mới
           </Button>
         }
       />
@@ -53,7 +53,7 @@ export default function ProductListView() {
         loading={productsLoading}
         mutate={productsMutate}
         search={search}
-        rowCount={productPaginate?.totalElements || 1}
+        rowCount={productPaginate.totalElements}
         page={page}
         pageSize={pageSize}
         onPageChange={setPage}

@@ -52,12 +52,12 @@ export const paths = {
     },
     order: {
       root: `${ROOTS.DASHBOARD}/order`,
-      list: `${ROOTS.DASHBOARD}/order/list`,
+      list: `${ROOTS.DASHBOARD}/order`,
       details: (id: any) => `${ROOTS.DASHBOARD}/order/${id}`,
     },
     customer: {
       root: `${ROOTS.DASHBOARD}/customer`,
-      list: `${ROOTS.DASHBOARD}/customer/list`,
+      list: `${ROOTS.DASHBOARD}/customer`,
       details: (id: any) => `${ROOTS.DASHBOARD}/customer/${id}`,
     },
   },

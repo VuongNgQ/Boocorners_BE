@@ -6,20 +6,20 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import { useTheme } from '@mui/material/styles';
 
-import { fNumber, fPercent, fShortenNumber } from 'src/utils/format-number';
+import { fNumber, fPercent } from 'src/utils/format-number';
 
 import { CONFIG } from 'src/config-global';
 import { varAlpha, bgGradient } from 'src/theme/styles';
 
+import { useChart } from 'src/components/chart';
 import { Iconify } from 'src/components/iconify';
 import { SvgColor } from 'src/components/svg-color';
-import { Chart, useChart } from 'src/components/chart';
 
 // ----------------------------------------------------------------------
 
 type Props = CardProps & {
   title: string;
-  total: number;
+  total: string;
   percent: number;
   color?: ColorType;
   icon: React.ReactNode;
@@ -98,7 +98,7 @@ export function AnalyticsWidgetSummary({
     >
       <Box sx={{ width: 48, height: 48, mb: 3 }}>{icon}</Box>
 
-      {renderTrending}
+      {/* {renderTrending} */}
 
       <Box
         sx={{
@@ -110,16 +110,16 @@ export function AnalyticsWidgetSummary({
       >
         <Box sx={{ flexGrow: 1, minWidth: 112 }}>
           <Box sx={{ mb: 1, typography: 'subtitle2' }}>{title}</Box>
-          <Box sx={{ typography: 'h4' }}>{fShortenNumber(total)}</Box>
+          <Box sx={{ typography: 'h4' }}>{total}</Box>
         </Box>
 
-        <Chart
+        {/* <Chart
           type="line"
           series={[{ data: chart.series }]}
           options={chartOptions}
           width={84}
           height={56}
-        />
+        /> */}
       </Box>
 
       <SvgColor
