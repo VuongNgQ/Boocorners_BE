@@ -8,7 +8,7 @@ import axios, { fetcher, endpoints } from 'src/utils/axios';
 // ----------------------------------------------------------------------
 
 const swrOptions = {
-  revalidateIfStale: false,
+  revalidateIfStale: true,
   revalidateOnFocus: false,
   revalidateOnReconnect: false,
 };
@@ -295,7 +295,11 @@ type ProductDataN = {
 export function useGetProductById({ id }: { id: string }) {
   const url = `${endpoints.product.list}/${id}`;
 
-  const { data, isLoading, error, isValidating } = useSWR<ProductDataN>(url, fetcher, swrOptions);
+  const { data, isLoading, error, isValidating, mutate } = useSWR<ProductDataN>(
+    url,
+    fetcher,
+    swrOptions
+  );
 
   const memoizedValue = useMemo(
     () => ({
@@ -304,8 +308,9 @@ export function useGetProductById({ id }: { id: string }) {
       productError: error,
       productValidating: isValidating,
       productEmpty: !isLoading && !data?.details,
+      productMutate: mutate,
     }),
-    [data?.details, error, isLoading, isValidating]
+    [data?.details, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;

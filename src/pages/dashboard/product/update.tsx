@@ -1,5 +1,6 @@
 import type { Product } from 'src/types/product';
 
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import { useParams } from 'src/routes/hooks';
@@ -12,7 +13,14 @@ const metadata = { title: `Update product` };
 
 export default function Page() {
   const { id = '' } = useParams();
-  const { product, productError, productLoading } = useGetProductById({ id });
+
+  const { product, productError, productLoading, productMutate } = useGetProductById({ id });
+
+  useEffect(() => {
+    productMutate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <Helmet>

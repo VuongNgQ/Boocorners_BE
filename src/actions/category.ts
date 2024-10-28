@@ -54,7 +54,7 @@ type CategoryDetails = {
 export function useGetCategoryById({ id }: { id: string }) {
   const url = `${endpoints.category.list}/${id}`;
 
-  const { data, isLoading, error, isValidating } = useSWR<CategoryDetails>(
+  const { data, isLoading, error, isValidating, mutate } = useSWR<CategoryDetails>(
     url,
     fetcher,
     swrOptions
@@ -67,8 +67,9 @@ export function useGetCategoryById({ id }: { id: string }) {
       categoryError: error,
       categoryValidating: isValidating,
       categoryEmpty: !isLoading && !data?.details,
+      categoryMutate: mutate,
     }),
-    [data?.details, error, isLoading, isValidating]
+    [data?.details, error, isLoading, isValidating, mutate]
   );
 
   return memoizedValue;
