@@ -76,7 +76,7 @@ export default function ProductCreateEditForm({
           ...data,
           description: data.productDetails,
           productPhotos: data.productPhotos.map((photo) => ({
-            path: photo,
+            path: photo.path,
             alt: data.productName,
           })),
         });
@@ -85,7 +85,7 @@ export default function ProductCreateEditForm({
           ...data,
           productPhotos: data.productPhotos.map((photo) => ({
             ...photo,
-            path: photo,
+            path: photo.path,
             alt: data.productName,
           })),
         });
