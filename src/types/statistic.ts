@@ -19,7 +19,7 @@ type DashboardDetails = {
   ordersByTime: OrdersByTime;
 };
 
-type AdminDashboardSummary = {
+export type AdminDashboardSummary = {
   code: number;
   message: string;
   lists: null | any[];

@@ -43,7 +43,7 @@ import { ContainedButton } from '../_partials/buttons';
 
 type ICustomerInfo = ICustomerCheckout;
 export default function CartInfo() {
-  const [shipCost, setShipCost] = useState(() => SHIPPING_COST || 0);
+  const [shipCost] = useState(() => SHIPPING_COST || 0);
 
   const [customerInfo, setCustomerInfo] = useState<ICustomerInfo | null | 'empty'>(null);
 

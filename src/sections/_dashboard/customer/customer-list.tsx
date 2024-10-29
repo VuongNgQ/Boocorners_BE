@@ -1,3 +1,5 @@
+import type { Customer } from 'src/types/customer';
+
 import { useMemo } from 'react';
 
 import { Card } from '@mui/material';

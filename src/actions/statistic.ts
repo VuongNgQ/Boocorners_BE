@@ -1,3 +1,5 @@
+import type { AdminDashboardSummary } from 'src/types/statistic';
+
 import useSWR from 'swr';
 import { useMemo } from 'react';
 

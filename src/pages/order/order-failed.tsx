@@ -1,6 +1,10 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router';
 import { Helmet } from 'react-helmet-async';
 
 import { Box } from '@mui/material';
+
+import { cancelOrder } from 'src/actions/order';
 
 import OrderStatusView from 'src/sections/order/view/order-status-view';
 
@@ -9,21 +13,21 @@ import OrderStatusView from 'src/sections/order/view/order-status-view';
 const metadata = { title: `Oops! Order failed` };
 
 export default function Page() {
-  // const location = useLocation();
-  // const queryParams = new URLSearchParams(location.search);
-  // const orderID = queryParams.get('id');
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const orderID = queryParams.get('id');
 
-  // useEffect(() => {
-  //   const handleCancelOrder = () => {
-  //     if (orderID) {
-  //       cancelOrder(orderID);
-  //     } else {
-  //       console.error('Order ID is undefined');
-  //     }
-  //   };
+  useEffect(() => {
+    const handleCancelOrder = () => {
+      if (orderID) {
+        cancelOrder(orderID);
+      } else {
+        console.error('Order ID is undefined');
+      }
+    };
 
-  //   handleCancelOrder();
-  // }, [orderID]);
+    handleCancelOrder();
+  }, [orderID]);
 
   return (
     <>
