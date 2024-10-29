@@ -1,4 +1,4 @@
-import type { Product, IProductItem } from 'src/types/product';
+import type { Product } from 'src/types/product';
 
 import useSWR from 'swr';
 import { useMemo } from 'react';
@@ -23,80 +23,6 @@ type FilterListParams = {
   categoryId?: number;
   sort?: string;
 };
-type ProductsData = {
-  products: IProductItem[];
-};
-
-export function useGetProducts() {
-  const url = endpoints.product.list;
-
-  const { data, isLoading, error, isValidating } = useSWR<ProductsData>(url, fetcher, swrOptions);
-
-  const memoizedValue = useMemo(
-    () => ({
-      products: data?.products || [],
-      productsLoading: isLoading,
-      productsError: error,
-      productsValidating: isValidating,
-      productsEmpty: !isLoading && !data?.products.length,
-    }),
-    [data?.products, error, isLoading, isValidating]
-  );
-
-  return memoizedValue;
-}
-
-// ----------------------------------------------------------------------
-
-type ProductData = {
-  product: IProductItem;
-};
-
-export function useGetProduct(productId: any) {
-  const url = productId ? [endpoints.product.details, { params: { productId } }] : '';
-
-  const { data, isLoading, error, isValidating } = useSWR<ProductData>(url, fetcher, swrOptions);
-
-  const memoizedValue = useMemo(
-    () => ({
-      product: data?.product,
-      productLoading: isLoading,
-      productError: error,
-      productValidating: isValidating,
-    }),
-    [data?.product, error, isLoading, isValidating]
-  );
-
-  return memoizedValue;
-}
-
-// ----------------------------------------------------------------------
-
-type SearchResultsData = {
-  results: IProductItem[];
-};
-
-export function useSearchProducts(query: string) {
-  const url = query ? [endpoints.product.search, { params: { query } }] : '';
-
-  const { data, isLoading, error, isValidating } = useSWR<SearchResultsData>(url, fetcher, {
-    ...swrOptions,
-    keepPreviousData: true,
-  });
-
-  const memoizedValue = useMemo(
-    () => ({
-      searchResults: data?.results || [],
-      searchLoading: isLoading,
-      searchError: error,
-      searchValidating: isValidating,
-      searchEmpty: !isLoading && !data?.results.length,
-    }),
-    [data?.results, error, isLoading, isValidating]
-  );
-
-  return memoizedValue;
-}
 
 // ----------------------------------------------------------------------
 
@@ -187,99 +113,6 @@ export function useGetProductsN({
       productsMutate: mutate,
     };
   }, [data?.lists, error, isLoading, isValidating, mutate]);
-
-  return memoizedValue;
-}
-
-// ----------------------------------------------------------------------
-export function useGetProductsNOnSale({
-  page = 0,
-  pageSize = 10,
-  maxPrice,
-  minPrice,
-  productName,
-  categoryId,
-  sort,
-}: FilterListParams) {
-  let url = `${endpoints.product.onSale}?page=${page}&size=${pageSize}`;
-
-  if (categoryId !== undefined && categoryId !== -1) {
-    url = `${endpoints.product.onSale}/category/${categoryId}?page=${page}&size=${pageSize}`;
-  }
-
-  if (minPrice != null) {
-    url += `&minPrice=${minPrice}`;
-  }
-  if (maxPrice != null) {
-    url += `&maxPrice=${maxPrice}`;
-  }
-  if (productName) {
-    url += `&productName=${encodeURIComponent(productName)}`;
-  }
-
-  if (sort) {
-    switch (sort) {
-      case 'most-popular':
-        url += `&sort=createdDate&sort=desc`;
-        break;
-      case 'latest':
-        url += `&sort=createdDate&sort=asc`;
-        break;
-      case 'highest-price':
-        url += `&sort=price&sort=desc`;
-        break;
-      case 'lowest-price':
-        url += `&sort=price&sort=asc`;
-        break;
-      default:
-        break;
-    }
-  }
-
-  const { data, isLoading, error, isValidating } = useSWR<ProductsDataN>(url, fetcher, swrOptions);
-
-  const memoizedValue = useMemo(() => {
-    const paginate = data?.lists
-      ? {
-          pageNumber: data.lists.number,
-          pageSize: data.lists.size,
-          totalPages: data.lists.totalPages,
-          totalElements: data.lists.totalElements,
-        }
-      : {
-          pageNumber: 0,
-          pageSize: 0,
-          totalPages: 0,
-          totalElements: 0,
-        };
-    return {
-      products: data?.lists?.content || [],
-      productPaginate: paginate,
-      productsLoading: isLoading,
-      productsError: error,
-      productsValidating: isValidating,
-      productsEmpty: !isLoading && !data?.lists?.content?.length,
-    };
-  }, [data?.lists, error, isLoading, isValidating]);
-
-  return memoizedValue;
-}
-
-export function useGetProductsOnSale() {
-  const url = endpoints.product.onSale;
-
-  const { data, isLoading, error, isValidating } = useSWR<ProductsDataN>(url, fetcher, swrOptions);
-
-  const memoizedValue = useMemo(
-    () => ({
-      productsOnSale: data?.lists.content || [],
-      productsOnSaleLoading: isLoading,
-      productsOnSaleError: error,
-      productsOnSaleValidating: isValidating,
-      productsOnSaleEmpty: !isLoading && !data?.lists.content.length,
-    }),
-    [data?.lists, error, isLoading, isValidating]
-  );
 
   return memoizedValue;
 }

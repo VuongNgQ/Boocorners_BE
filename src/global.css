@@ -30,9 +30,6 @@
 /* image */
 @import './components/image/styles.css';
 
-/* map */
-@import './components/map/styles.css';
-
 /* lightbox */
 @import './components/lightbox/styles.css';
 
@@ -42,12 +39,7 @@
 /** **************************************
 * Baseline
 *************************************** */
-@font-face {
-  font-family: 'fontspring-demo-integral-cf-regular';
-  src:
-    local('fontspring-demo-integral-cf-regular'),
-    url('/fonts/Fontspring-DEMO-integralcf-regular.otf') format('truetype');
-}
+
 @font-face {
   font-family: 'alexandria-extrabold';
   src:

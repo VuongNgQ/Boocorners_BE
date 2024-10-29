@@ -8,7 +8,6 @@ import Grid from '@mui/material/Unstable_Grid2/Grid2';
 
 import { pxToRem } from 'src/theme/styles';
 
-import Link from '@mui/material/Link';
 import { ContainedButton } from '../_partials/buttons';
 
 // ----------------------------------------------------------------------

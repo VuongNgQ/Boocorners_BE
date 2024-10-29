@@ -11,7 +11,7 @@ import HomeDisplay from '../home-display';
 // ----------------------------------------------------------------------
 
 export function HomeView() {
-  const { products, productsEmpty } = useGetProductsN({ page: 0, pageSize: 4 });
+  const { products } = useGetProductsN({ page: 0, pageSize: 4 });
   const { products: productsNewArrival, productsEmpty: productsNewArrivalEmpty } =
     useGetProductsNewArrival({
       page: 0,
@@ -25,7 +25,7 @@ export function HomeView() {
       <HomeHero />
 
       <Stack sx={{ position: 'relative', bgcolor: 'background.default' }}>
-        {productsNewArrivalEmpty ?? (
+        {!productsNewArrivalEmpty && (
           <HomeDisplay title="New Arrivals" product={productsNewArrival} href="./new-arrivals" />
         )}
 

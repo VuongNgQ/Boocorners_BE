@@ -67,7 +67,6 @@ export default function SearchBar({ sx }: Props) {
         loading={productsLoading}
         value={query}
         inputValue={query}
-        // clearOnBlur
         // BE search
         loadingText={
           <Box>
@@ -80,6 +79,7 @@ export default function SearchBar({ sx }: Props) {
           popper: { placement: 'bottom-start', sx: { minWidth: 320 } },
           paper: { sx: { [` .${autocompleteClasses.option}`]: { pl: 0.75 } } },
         }}
+        clearOnBlur
         renderInput={(params) => (
           <TextField
             {...params}
@@ -90,7 +90,6 @@ export default function SearchBar({ sx }: Props) {
             placeholder="Search for products..."
             InputProps={{
               ...params.InputProps,
-              type: 'search',
               sx: {
                 backgroundColor: '#F0F0F0',
                 borderRadius: pxToRem(62),
@@ -123,11 +122,12 @@ export default function SearchBar({ sx }: Props) {
           });
           const parts = parse(product.label, matches);
           return (
-            <Box component="li" {...props} key={product.value}>
+            <Box component="li" {...props} key={product.value} sx={{ p: 0 }}>
               <Link
                 component={RouterLink}
                 href={paths.main.shop.details(product.value)}
                 sx={{
+                  width: 1,
                   '&:hover': {
                     textDecoration: 'none',
                   },
@@ -138,7 +138,7 @@ export default function SearchBar({ sx }: Props) {
                     <Typography
                       key={index}
                       component="span"
-                      color={part.highlight ? 'primary' : 'textPrimary'}
+                      color={part.highlight ? 'secondary' : 'textPrimary'}
                       sx={{
                         typography: 'body2',
                         fontWeight: part.highlight ? 'fontWeightSemiBold' : 'fontWeightMedium',

@@ -1,5 +1,3 @@
-import type { IProductItem } from 'src/types/product';
-
 import { useEffect } from 'react';
 
 import Box from '@mui/material/Box';
@@ -15,7 +13,7 @@ import { Carousel, useCarousel, CarouselThumb, CarouselThumbs } from 'src/compon
 // ----------------------------------------------------------------------
 
 type Props = {
-  images?: IProductItem['images'];
+  images?: string[];
 };
 
 export function ShopDetailsCarousel({ images }: Props) {

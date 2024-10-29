@@ -73,6 +73,7 @@ export default function OrderList({
           onSearchChange={() => {}}
           density="comfortable"
           slots={{
+            // eslint-disable-next-line react/jsx-no-useless-fragment
             toolbar: () => <></>,
           }}
           sx={{ [`& .${gridClasses.cell}`]: { alignItems: 'center', display: 'inline-flex' } }}

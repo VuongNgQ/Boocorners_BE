@@ -29,6 +29,7 @@ type Props = Omit<DialogProps, 'children'> & {
 };
 
 export default function OrderModalDetails({ order, ...dialogProps }: Props) {
+  // eslint-disable-next-line react/jsx-no-useless-fragment
   if (!dialogProps.open && !order) return <></>;
   const status = getOrderStatus(order.orderStatus);
   const paymentStatus = getPaymentStatus(order?.payment?.paymentStatus);

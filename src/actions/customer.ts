@@ -1,4 +1,5 @@
 import type { ICustomerCheckout } from 'src/types/order';
+import type { CustomerResponse } from 'src/types/customer';
 
 import useSWR from 'swr';
 import { useMemo } from 'react';
